@@ -1,0 +1,144 @@
+package technicals.model;
+
+import java.time.ZonedDateTime;
+
+public class Candle
+{
+	protected ZonedDateTime openTime;
+	protected double openPrice;
+	protected double highPrice;
+	protected double lowPrice;
+	protected double closePrice;
+	protected double volume;
+
+	public Candle()
+	{
+		//
+	}
+
+	public Candle(ZonedDateTime openTime, double openPrice, double highPrice, double lowPrice, double closePrice, double volume)
+	{
+		this.openTime = openTime;
+		this.openPrice = openPrice;
+		this.highPrice = highPrice;
+		this.lowPrice = lowPrice;
+		this.closePrice = closePrice;
+		this.volume = volume;
+	}
+
+	public ZonedDateTime getOpenTime()
+	{
+		return openTime;
+	}
+
+	public void setOpenTime(ZonedDateTime openTime)
+	{
+		this.openTime = openTime;
+	}
+
+	public double getOpenPrice()
+	{
+		return openPrice;
+	}
+
+	public void setOpenPrice(double openPrice)
+	{
+		this.openPrice = openPrice;
+	}
+
+	public double getHighPrice()
+	{
+		return highPrice;
+	}
+
+	public void setHighPrice(double highPrice)
+	{
+		this.highPrice = highPrice;
+	}
+
+	public double getLowPrice()
+	{
+		return lowPrice;
+	}
+
+	public void setLowPrice(double lowPrice)
+	{
+		this.lowPrice = lowPrice;
+	}
+
+	public double getClosePrice()
+	{
+		return closePrice;
+	}
+
+	public void setClosePrice(double closePrice)
+	{
+		this.closePrice = closePrice;
+	}
+
+	public double getVolume()
+	{
+		return volume;
+	}
+
+	public void setVolume(double volume)
+	{
+		this.volume = volume;
+	}
+
+	// ---- CALCULATED FIELDS -------------------------------------------------
+
+	public double getHL2()
+	{
+		return (highPrice + lowPrice) / 2;
+	}
+
+	public double getHLC3()
+	{
+		return (highPrice + lowPrice + closePrice) / 3;
+	}
+
+	public double getOHLC4()
+	{
+		return (openPrice + highPrice + lowPrice + closePrice) / 4;
+	}
+
+	// ---- DEFAULT VALUE -----------------------------------------------------
+
+	public double getDefaultPrice()
+	{
+		return closePrice;
+	}
+
+	public double getDefaultPrice(CandleValue candleValue)
+	{
+		switch (candleValue)
+		{
+		case OPEN:
+			return openPrice;
+		case HIGH:
+			return highPrice;
+		case LOW:
+			return lowPrice;
+		case CLOSE:
+			return closePrice;
+		case HL2:
+			return getHL2();
+		case HLC3:
+			return getHLC3();
+		case OHLC4:
+			return getOHLC4();
+		default:
+			return closePrice;
+		}
+	}
+
+	// ---- TO STRING ---------------------------------------------------------
+
+	@Override
+	public String toString()
+	{
+		return String.format("%s\t%f\t%f\t%f\t%f\t%f", openTime, openPrice, highPrice, lowPrice, closePrice, volume);
+	}
+
+}
