@@ -1,7 +1,5 @@
 package technicals.indicators.ma;
 
-import org.decimal4j.util.DoubleRounder;
-
 import technicals.config.Labels;
 import technicals.model.Candle;
 import technicals.model.indicators.IndicatorEntry;
@@ -25,7 +23,7 @@ public class VWMovingAverage
 		for (int i = 0; i < len; i++)
 		{
 			smaEntries[i] = new IndicatorEntry(candles[i + periods - 1]);
-			smaEntries[i].setValue(DoubleRounder.round(calcAvg(candles, i, periods), 4));
+			smaEntries[i].setValue(calcAvg(candles, i, periods));
 		}
 
 		return smaEntries;

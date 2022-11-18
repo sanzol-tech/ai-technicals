@@ -1,7 +1,5 @@
 package technicals.indicators.oscillator;
 
-import org.decimal4j.util.DoubleRounder;
-
 import technicals.config.Labels;
 import technicals.indicators.ma.ExponentialMovingAverage;
 import technicals.model.Candle;
@@ -40,7 +38,7 @@ public class MACD
 		double[] macd = new double[emaSlow.length];
 		for (int i = 0; i < emaSlow.length; i++)
 		{
-			macd[i] = DoubleRounder.round(emaFast[i + baseFast] - emaSlow[i], 2);
+			macd[i] = emaFast[i + baseFast] - emaSlow[i];
 		}
 
 		// ---- Signal ----------------------------

@@ -1,7 +1,5 @@
 package technicals.indicators.oscillator;
 
-import org.decimal4j.util.DoubleRounder;
-
 import technicals.config.Labels;
 import technicals.model.Candle;
 import technicals.model.indicators.IndicatorEntry;
@@ -43,7 +41,7 @@ public class UltimateOscillator
 			double uo = 100 * (((4 * avg1) + (2 * avg2) + avg3) / divider);
 
 			uoEntries[i - periods3 + 1] = new IndicatorEntry(candles[i]);
-			uoEntries[i - periods3 + 1].setValue(DoubleRounder.round(uo, 2));
+			uoEntries[i - periods3 + 1].setValue(uo);
 		}
 
 		return uoEntries;

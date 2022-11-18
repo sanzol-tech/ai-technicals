@@ -1,7 +1,5 @@
 package technicals.indicators.oscillator;
 
-import org.decimal4j.util.DoubleRounder;
-
 import technicals.config.Labels;
 import technicals.model.Candle;
 import technicals.model.oscillator.AroonEntry;
@@ -35,17 +33,17 @@ public class Aroon
 			// aroon Up
 			int highestHighIndex = CandleUtils.highestHighIndex(candles, i, i + periods - 1);
 			int sinceHigh = (i + periods - 1) - highestHighIndex;
-			double aroonUp = DoubleRounder.round(100 * (((double) periods - (double) sinceHigh) / (double) periods), 2);
+			double aroonUp = 100 * (((double) periods - (double) sinceHigh) / (double) periods);
 			aroonEntries[i].setAroonUp(aroonUp);
 
 			// aroon Down
 			int lowestLowIndex = CandleUtils.lowestLowIndex(candles, i, i + periods - 1);
 			int sinceLow = (i + periods - 1) - lowestLowIndex;
-			double aroonDown = DoubleRounder.round(100 * (((double) periods - (double) sinceLow) / (double) periods), 2);
+			double aroonDown = 100 * (((double) periods - (double) sinceLow) / (double) periods);
 			aroonEntries[i].setAroonDown(aroonDown);
 
 			// aroon Oscillator
-			aroonEntries[i].setOscillator(DoubleRounder.round(aroonUp - aroonDown, 2));
+			aroonEntries[i].setOscillator(aroonUp - aroonDown);
 		}
 
 		return aroonEntries;

@@ -1,7 +1,5 @@
 package technicals.indicators.volatility;
 
-import org.decimal4j.util.DoubleRounder;
-
 import technicals.config.Labels;
 import technicals.model.Candle;
 import technicals.model.indicators.IndicatorEntry;
@@ -52,7 +50,7 @@ public class StandardDeviation
 			stdevSum += Math.pow(candles[i].getDefaultPrice() - mean, 2);
 		}
 
-		return DoubleRounder.round(Math.sqrt(stdevSum / lenght), 2);
+		return Math.sqrt(stdevSum / lenght);
 	}
 
 }

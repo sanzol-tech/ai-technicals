@@ -1,7 +1,5 @@
 package technicals.indicators.volume;
 
-import org.decimal4j.util.DoubleRounder;
-
 import technicals.config.Labels;
 import technicals.model.Candle;
 import technicals.model.indicators.IndicatorEntry;
@@ -63,7 +61,7 @@ public class MoneyFlowIndex
 				double mfi = 100 - (100 / (1 + mr));
 
 				mfiEntries[i - periods + 1] = new IndicatorEntry(candles[i]);
-				mfiEntries[i - periods + 1].setValue(DoubleRounder.round(mfi, 2));
+				mfiEntries[i - periods + 1].setValue(mfi);
 			}
 
 		}

@@ -36,7 +36,7 @@ public class Stochastic
 			double lowestLow = CandleUtils.lowestLow(candles, i, i + periods - 1);
 			stochasticEntries[i].setLowestLow(lowestLow);
 
-			double k1 = 100 * (candles[i + periods - 1].getDefaultPrice() - lowestLow) / (highestHigh - lowestLow);
+			double k1 = 100 * (candles[i + periods - 1].getClosePrice() - lowestLow) / (highestHigh - lowestLow);
 			stochasticEntries[i].setK1(k1);
 
 			double k = avg(stochasticEntries, FieldType.x, i, smoothK);

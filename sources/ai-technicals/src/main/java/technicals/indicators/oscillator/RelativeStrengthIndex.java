@@ -1,7 +1,5 @@
 package technicals.indicators.oscillator;
 
-import org.decimal4j.util.DoubleRounder;
-
 import technicals.config.Labels;
 import technicals.model.Candle;
 import technicals.model.oscillator.RsiEntry;
@@ -67,7 +65,7 @@ public class RelativeStrengthIndex
 				rsiEntries[idx].setAvgGain(avgGain);
 				rsiEntries[idx].setAvgLoss(avgLoss);
 				rsiEntries[idx].setRs(rs);
-				rsiEntries[idx].setRsi(DoubleRounder.round(rsi, 2));
+				rsiEntries[idx].setRsi(rsi);
 
 				idx++;
 			}

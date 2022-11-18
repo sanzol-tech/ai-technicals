@@ -1,7 +1,5 @@
 package technicals.indicators.ma;
 
-import org.decimal4j.util.DoubleRounder;
-
 import technicals.config.Labels;
 import technicals.model.Candle;
 import technicals.model.indicators.IndicatorEntry;
@@ -24,7 +22,7 @@ public class WeightedMovingAverage
 
 		for (int i = 0; i < len; i++)
 		{
-			results[i] = DoubleRounder.round(calcAvg(values, i, periods), 4);
+			results[i] = calcAvg(values, i, periods);
 		}
 
 		return results;
@@ -43,7 +41,7 @@ public class WeightedMovingAverage
 		for (int i = 0; i < len; i++)
 		{
 			wmaEntries[i] = new IndicatorEntry(candles[i + periods - 1]);
-			wmaEntries[i].setValue(DoubleRounder.round(calcAvg(candles, i, periods), 4));
+			wmaEntries[i].setValue(calcAvg(candles, i, periods));
 		}
 
 		return wmaEntries;

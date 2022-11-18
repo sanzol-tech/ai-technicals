@@ -1,7 +1,5 @@
 package technicals.indicators.oscillator;
 
-import org.decimal4j.util.DoubleRounder;
-
 import technicals.config.Labels;
 import technicals.model.Candle;
 import technicals.model.oscillator.WilliamsREntry;
@@ -40,7 +38,7 @@ public class WilliamsR
 
 			double closePrice = candles[i + periods - 1].getClosePrice();
 			double r = (highestHigh - closePrice) / (highestHigh - lowestLow) * -100;
-			williamsREntries[i].setR(DoubleRounder.round(r, 2));
+			williamsREntries[i].setR(r);
 		}
 
 		return williamsREntries;

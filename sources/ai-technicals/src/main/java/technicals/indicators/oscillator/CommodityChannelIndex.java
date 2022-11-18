@@ -1,7 +1,5 @@
 package technicals.indicators.oscillator;
 
-import org.decimal4j.util.DoubleRounder;
-
 import technicals.config.Labels;
 import technicals.model.Candle;
 import technicals.model.indicators.IndicatorEntry;
@@ -53,7 +51,7 @@ public class CommodityChannelIndex
 			// Calc cci
 			double cci = (meanDeviation > 0) ? (typicalPrice - ma) / (0.015 * meanDeviation) : 0;
 
-			cciEntries[i].setValue(DoubleRounder.round(cci, 2));
+			cciEntries[i].setValue(cci);
 		}
 
 		return cciEntries;
