@@ -29,6 +29,7 @@ Library for financial technical analysis with multiple technical indicators
 - Standard Deviation
 
 ### Volume
+- A/D - Accumulation / Distribution
 - MFI - Money Flow Index
 - OBV - On Balance Volume
 - VWAP - Volume Weighted Average Price

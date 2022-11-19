@@ -10,6 +10,8 @@ public class Candle
 	protected double lowPrice;
 	protected double closePrice;
 	protected double volume;
+	protected double quoteVolume;
+	protected long count;
 
 	public Candle()
 	{
@@ -84,6 +86,26 @@ public class Candle
 	public void setVolume(double volume)
 	{
 		this.volume = volume;
+	}
+
+	public double getQuoteVolume()
+	{
+		return quoteVolume;
+	}
+
+	public void setQuoteVolume(double quoteVolume)
+	{
+		this.quoteVolume = quoteVolume;
+	}
+
+	public long getCount()
+	{
+		return count;
+	}
+
+	public void setCount(long count)
+	{
+		this.count = count;
 	}
 
 	// ---- CALCULATED FIELDS -------------------------------------------------

@@ -113,6 +113,9 @@ public class CandleUtils
 	{
 		double high = candles[startIndex].getHighPrice();
 		double low = candles[startIndex].getHighPrice();
+		double volume = 0;
+		double quoteVolume = 0;
+		long count = 0;
 
 		for (int i = startIndex; i <= endIndex; i++)
 		{
@@ -124,6 +127,10 @@ public class CandleUtils
 			{
 				low = candles[i].getLowPrice();
 			}
+
+			volume += candles[i].getVolume();
+			quoteVolume += candles[i].getQuoteVolume();
+			count += candles[i].getCount();
 		}
 
 		Candle newCandle = new Candle();
@@ -132,6 +139,9 @@ public class CandleUtils
 		newCandle.setHighPrice(high);
 		newCandle.setLowPrice(low);
 		newCandle.setClosePrice(candles[endIndex].getClosePrice());
+		newCandle.setVolume(volume);
+		newCandle.setQuoteVolume(quoteVolume);
+		newCandle.setCount(count);
 
 		return newCandle;
 	}
