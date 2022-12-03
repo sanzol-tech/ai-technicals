@@ -1,5 +1,5 @@
 # ai-technicals
-Library for financial technical analysis with multiple technical indicators
+Java library for financial technical analysis with multiple technical indicators
 
 ### Moving Average
 - SMA - Simple Moving Average
@@ -40,6 +40,9 @@ Library for financial technical analysis with multiple technical indicators
 - Demarks Pivot Points
 - Fibonacci Pivot Points
 - Woodie Pivot Points
+
+### Others
+- Williams Fractals
 
 ## How to use the library
 
