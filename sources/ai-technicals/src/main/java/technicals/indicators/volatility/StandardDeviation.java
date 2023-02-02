@@ -1,7 +1,7 @@
 package technicals.indicators.volatility;
 
 import technicals.config.Labels;
-import technicals.model.Candle;
+import technicals.model.TechCandle;
 import technicals.model.indicators.IndicatorEntry;
 
 /**
@@ -9,12 +9,12 @@ import technicals.model.indicators.IndicatorEntry;
  */
 public class StandardDeviation
 {
-	public static IndicatorEntry[] calculate(Candle[] candles)
+	public static IndicatorEntry[] calculate(TechCandle[] candles)
 	{
 		return calculate(candles, 5);
 	}
 
-	public static IndicatorEntry[] calculate(Candle[] candles, int periods)
+	public static IndicatorEntry[] calculate(TechCandle[] candles, int periods)
 	{
 		if (candles.length < periods)
 		{
@@ -33,7 +33,7 @@ public class StandardDeviation
 		return sdEntries;
 	}
 
-	private static double standardDeviation(Candle[] candles, int startIndex, int periods)
+	private static double standardDeviation(TechCandle[] candles, int startIndex, int periods)
 	{
 		double priceSum = 0.0;
 		double stdevSum = 0.0;

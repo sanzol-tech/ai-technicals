@@ -1,7 +1,7 @@
 package technicals.indicators.oscillator;
 
 import technicals.config.Labels;
-import technicals.model.Candle;
+import technicals.model.TechCandle;
 import technicals.model.indicators.IndicatorEntry;
 
 /**
@@ -9,17 +9,17 @@ import technicals.model.indicators.IndicatorEntry;
  */
 public class Momentum
 {
-	public static IndicatorEntry[] calculate(Candle[] candles)
+	public static IndicatorEntry[] calculate(TechCandle[] candles)
 	{
 		return calculate(candles, 10, 0);
 	}
 
-	public static IndicatorEntry[] calculate(Candle[] candles, int periods)
+	public static IndicatorEntry[] calculate(TechCandle[] candles, int periods)
 	{
 		return calculate(candles, periods, 0);
 	}
 
-	public static IndicatorEntry[] calculate(Candle[] candles, int periods, int version)
+	public static IndicatorEntry[] calculate(TechCandle[] candles, int periods, int version)
 	{
 		if (candles.length <= periods)
 		{

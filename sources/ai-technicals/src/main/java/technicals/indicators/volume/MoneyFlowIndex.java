@@ -1,7 +1,7 @@
 package technicals.indicators.volume;
 
 import technicals.config.Labels;
-import technicals.model.Candle;
+import technicals.model.TechCandle;
 import technicals.model.indicators.IndicatorEntry;
 import technicals.util.DoubleArrayUtils;
 
@@ -11,12 +11,12 @@ import technicals.util.DoubleArrayUtils;
 public class MoneyFlowIndex
 {
 
-	public static IndicatorEntry[] calculate(Candle[] candles)
+	public static IndicatorEntry[] calculate(TechCandle[] candles)
 	{
 		return calculate(candles, 14);
 	}
 
-	public static IndicatorEntry[] calculate(Candle[] candles, int periods)
+	public static IndicatorEntry[] calculate(TechCandle[] candles, int periods)
 	{
 		if (candles.length < periods)
 		{

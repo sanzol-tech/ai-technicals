@@ -1,7 +1,7 @@
 package technicals.indicators.volatility;
 
 import technicals.config.Labels;
-import technicals.model.Candle;
+import technicals.model.TechCandle;
 import technicals.model.indicators.AtrEntry;
 
 /**
@@ -10,12 +10,12 @@ import technicals.model.indicators.AtrEntry;
 public class AverageTrueRange
 {
 
-	public static AtrEntry[] calculate(Candle[] candles)
+	public static AtrEntry[] calculate(TechCandle[] candles)
 	{
 		return calculate(candles, 20);
 	}
 
-	public static AtrEntry[] calculate(Candle[] candles, int periods)
+	public static AtrEntry[] calculate(TechCandle[] candles, int periods)
 	{
 		if (candles.length < periods)
 		{
@@ -26,7 +26,7 @@ public class AverageTrueRange
 
 		for (int i = 0; i < candles.length; i++)
 		{
-			Candle current = candles[i];
+			TechCandle current = candles[i];
 			entries[i] = new AtrEntry(current);
 
 			double tr = trueRange(candles, i);
@@ -47,7 +47,7 @@ public class AverageTrueRange
 		return entries;
 	}
 
-	public static double trueRange(Candle[] candles, int index)
+	public static double trueRange(TechCandle[] candles, int index)
 	{
 		double tr = candles[index].getHighPrice() - candles[index].getLowPrice();
 

@@ -11,7 +11,7 @@ import technicals.indicators.pp.DemarksPivotPoints;
 import technicals.indicators.pp.FibonacciPivotPoints;
 import technicals.indicators.pp.StandardPivotPoints;
 import technicals.indicators.pp.WoodiePivotPoints;
-import technicals.model.Candle;
+import technicals.model.TechCandle;
 
 public class PivotPoints_
 {
@@ -19,8 +19,8 @@ public class PivotPoints_
 	public static void main(String[] args) throws Exception
 	{
 		List<BinanceCandle> lstBinanceCandles = BinanceApiClient.getKlines("BTCUSDT", BinanceIntervalType._1w, 2);
-		Candle[] candles = BinanceCandleUtils.toCandleArray(lstBinanceCandles);
-		Candle candle = candles[candles.length - 2];
+		TechCandle[] candles = BinanceCandleUtils.toCandleArray(lstBinanceCandles);
+		TechCandle candle = candles[candles.length - 2];
 
 		System.out.println("Standard\n" + new StandardPivotPoints().calculate(candle));
 		System.out.println("Fibonacci\n" + new FibonacciPivotPoints().calculate(candle));

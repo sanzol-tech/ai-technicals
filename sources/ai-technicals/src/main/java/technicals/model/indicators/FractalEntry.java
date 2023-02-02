@@ -1,8 +1,8 @@
 package technicals.model.indicators;
 
-import technicals.model.Candle;
+import technicals.model.TechCandle;
 
-public class FractalEntry extends Candle
+public class FractalEntry extends TechCandle
 {
 	private boolean isHigh;
 	private boolean isLow;
@@ -12,7 +12,7 @@ public class FractalEntry extends Candle
 		//
 	}
 
-	public FractalEntry(Candle candle)
+	public FractalEntry(TechCandle candle)
 	{
 		openTime = candle.getOpenTime();
 		openPrice = candle.getOpenPrice();

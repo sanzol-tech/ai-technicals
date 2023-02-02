@@ -1,10 +1,10 @@
-package technicals.indicators.pp;
+package technicals.indicators.misc;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import technicals.config.Labels;
-import technicals.model.Candle;
+import technicals.model.TechCandle;
 import technicals.model.indicators.FractalEntry;
 
 /**
@@ -12,12 +12,12 @@ import technicals.model.indicators.FractalEntry;
  */
 public class Fractals
 {
-	public static FractalEntry[] calculate(Candle[] candles)
+	public static FractalEntry[] calculate(TechCandle[] candles)
 	{
 		return calculate(candles, 2);
 	}
 
-	public static FractalEntry[] calculate(Candle[] candles, int periods)
+	public static FractalEntry[] calculate(TechCandle[] candles, int periods)
 	{
 		if (candles.length <= periods)
 		{

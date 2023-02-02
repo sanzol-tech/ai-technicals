@@ -2,7 +2,7 @@ package technicals.model;
 
 import java.time.ZonedDateTime;
 
-public class Candle
+public class TechCandle
 {
 	protected ZonedDateTime openTime;
 	protected double openPrice;
@@ -13,12 +13,12 @@ public class Candle
 	protected double quoteVolume;
 	protected long count;
 
-	public Candle()
+	public TechCandle()
 	{
 		//
 	}
 
-	public Candle(ZonedDateTime openTime, double openPrice, double highPrice, double lowPrice, double closePrice, double volume)
+	public TechCandle(ZonedDateTime openTime, double openPrice, double highPrice, double lowPrice, double closePrice, double volume)
 	{
 		this.openTime = openTime;
 		this.openPrice = openPrice;

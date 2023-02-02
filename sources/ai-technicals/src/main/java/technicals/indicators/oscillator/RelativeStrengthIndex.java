@@ -1,7 +1,7 @@
 package technicals.indicators.oscillator;
 
 import technicals.config.Labels;
-import technicals.model.Candle;
+import technicals.model.TechCandle;
 import technicals.model.oscillator.RsiEntry;
 import technicals.util.DoubleArrayUtils;
 
@@ -11,12 +11,12 @@ import technicals.util.DoubleArrayUtils;
 public class RelativeStrengthIndex
 {
 
-	public static RsiEntry[] calculate(Candle[] candles)
+	public static RsiEntry[] calculate(TechCandle[] candles)
 	{
 		return calculate(candles, 14);
 	}
 
-	public static RsiEntry[] calculate(Candle[] candles, int periods)
+	public static RsiEntry[] calculate(TechCandle[] candles, int periods)
 	{
 		RsiEntry[] rsiEntries;
 

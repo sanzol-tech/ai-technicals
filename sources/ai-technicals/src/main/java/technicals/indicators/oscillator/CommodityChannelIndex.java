@@ -1,7 +1,7 @@
 package technicals.indicators.oscillator;
 
 import technicals.config.Labels;
-import technicals.model.Candle;
+import technicals.model.TechCandle;
 import technicals.model.indicators.IndicatorEntry;
 
 /**
@@ -10,12 +10,12 @@ import technicals.model.indicators.IndicatorEntry;
 public class CommodityChannelIndex
 {
 
-	public static IndicatorEntry[] calculate(Candle[] candles)
+	public static IndicatorEntry[] calculate(TechCandle[] candles)
 	{
 		return calculate(candles, 20);
 	}
 
-	public static IndicatorEntry[] calculate(Candle[] candles, int periods)
+	public static IndicatorEntry[] calculate(TechCandle[] candles, int periods)
 	{
 		if (candles.length <= periods)
 		{
@@ -28,7 +28,7 @@ public class CommodityChannelIndex
 		for (int i = 0; i < len; i++)
 		{
 			cciEntries[i] = new IndicatorEntry(candles[i + periods - 1]);
-			Candle curr = candles[i + periods - 1];
+			TechCandle curr = candles[i + periods - 1];
 
 			double typicalPrice = curr.getHLC3();
 

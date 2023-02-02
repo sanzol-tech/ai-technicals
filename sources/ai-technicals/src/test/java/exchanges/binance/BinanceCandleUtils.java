@@ -2,17 +2,17 @@ package exchanges.binance;
 
 import java.util.List;
 
-import technicals.model.Candle;
+import technicals.model.TechCandle;
 
 public class BinanceCandleUtils
 {
 
-	public static Candle[] toCandleArray(List<BinanceCandle> lstCandles)
+	public static TechCandle[] toCandleArray(List<BinanceCandle> lstCandles)
 	{
-		Candle[] candle = new Candle[lstCandles.size()];
+		TechCandle[] candle = new TechCandle[lstCandles.size()];
 		for (int i = 0; i < lstCandles.size(); i++)
 		{
-			candle[i] = new Candle();
+			candle[i] = new TechCandle();
 			candle[i].setOpenTime(lstCandles.get(i).getOpenTimeZoned());
 			candle[i].setOpenPrice(lstCandles.get(i).getOpen().doubleValue());
 			candle[i].setClosePrice(lstCandles.get(i).getClose().doubleValue());

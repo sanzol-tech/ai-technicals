@@ -2,7 +2,7 @@ package technicals.indicators.oscillator;
 
 import technicals.config.Labels;
 import technicals.indicators.ma.ExponentialMovingAverage;
-import technicals.model.Candle;
+import technicals.model.TechCandle;
 import technicals.model.oscillator.MACDEntry;
 import technicals.util.CandleUtils;
 
@@ -11,12 +11,12 @@ import technicals.util.CandleUtils;
  */
 public class MACD
 {
-	public static MACDEntry[] calculate(Candle[] candles)
+	public static MACDEntry[] calculate(TechCandle[] candles)
 	{
 		return calculate(candles, 12, 26, 9);
 	}
 
-	public static MACDEntry[] calculate(Candle[] candles, int fastPeriods, int slowPeriods, int signalPeriods)
+	public static MACDEntry[] calculate(TechCandle[] candles, int fastPeriods, int slowPeriods, int signalPeriods)
 	{
 		if (candles.length < slowPeriods + signalPeriods)
 		{

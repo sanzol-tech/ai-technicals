@@ -1,7 +1,7 @@
 package technicals.indicators.ma;
 
 import technicals.config.Labels;
-import technicals.model.Candle;
+import technicals.model.TechCandle;
 import technicals.model.indicators.IndicatorEntry;
 
 /**
@@ -28,7 +28,7 @@ public class WeightedMovingAverage
 		return results;
 	}
 
-	public static IndicatorEntry[] calculate(Candle[] candles, int periods)
+	public static IndicatorEntry[] calculate(TechCandle[] candles, int periods)
 	{
 		if (candles.length < periods)
 		{
@@ -52,17 +52,17 @@ public class WeightedMovingAverage
 		double sum = 0;
 		for (int i = 0; i < periods; i++)
 		{
-			sum += values[startIndex + i] * (periods - i);
+			sum += values[startIndex + i] * (i + 1);
 		}
 		return sum / ((periods * (periods + 1)) / 2);
 	}
 
-	private static double calcAvg(Candle[] candles, int startIndex, int periods)
+	private static double calcAvg(TechCandle[] candles, int startIndex, int periods)
 	{
 		double sum = 0;
 		for (int i = 0; i < periods; i++)
 		{
-			sum += candles[startIndex + i].getDefaultPrice() * (periods - i);
+			sum += candles[startIndex + i].getDefaultPrice() * (i + 1);
 		}
 		return sum / ((periods * (periods + 1)) / 2);
 	}

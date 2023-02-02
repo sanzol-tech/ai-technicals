@@ -1,11 +1,11 @@
 package technicals.util;
 
-import technicals.model.Candle;
+import technicals.model.TechCandle;
 
 public class CandleUtils
 {
 
-	public static double[] toDoubleArray(Candle[] candles)
+	public static double[] toDoubleArray(TechCandle[] candles)
 	{
 		double[] prices = new double[candles.length];
 		for (int i = 0; i < candles.length; i++)
@@ -15,7 +15,7 @@ public class CandleUtils
 		return prices;
 	}
 
-	public static double sumPrice(Candle[] candles, int startIndex, int endIndex)
+	public static double sumPrice(TechCandle[] candles, int startIndex, int endIndex)
 	{
 		double sum = 0;
 		for (int i = startIndex; i <= endIndex; i++)
@@ -25,7 +25,7 @@ public class CandleUtils
 		return sum;
 	}
 
-	public static double avgPrice(Candle[] candles, int startIndex, int endIndex)
+	public static double avgPrice(TechCandle[] candles, int startIndex, int endIndex)
 	{
 		double sum = 0;
 		for (int i = startIndex; i <= endIndex; i++)
@@ -35,9 +35,9 @@ public class CandleUtils
 		return sum / (endIndex - startIndex + 1);
 	}
 
-	public static Candle[] slice(Candle[] candles, int startIndex, int endIndex)
+	public static TechCandle[] slice(TechCandle[] candles, int startIndex, int endIndex)
 	{
-		Candle[] newCandles = new Candle[endIndex - startIndex + 1];
+		TechCandle[] newCandles = new TechCandle[endIndex - startIndex + 1];
 		for (int i = startIndex; i <= endIndex; i++)
 		{
 			newCandles[i - startIndex] = candles[i];
@@ -45,7 +45,7 @@ public class CandleUtils
 		return newCandles;
 	}
 
-	public static int highestHighIndex(Candle[] candles, int startIndex, int endIndex)
+	public static int highestHighIndex(TechCandle[] candles, int startIndex, int endIndex)
 	{
 		double value = candles[startIndex].getHighPrice();
 		int index = startIndex;
@@ -62,7 +62,7 @@ public class CandleUtils
 		return index;
 	}
 
-	public static int lowestLowIndex(Candle[] candles, int startIndex, int endIndex)
+	public static int lowestLowIndex(TechCandle[] candles, int startIndex, int endIndex)
 	{
 		double value = candles[startIndex].getLowPrice();
 		int index = startIndex;
@@ -79,7 +79,7 @@ public class CandleUtils
 		return index;
 	}
 
-	public static double highestHigh(Candle[] candles, int startIndex, int endIndex)
+	public static double highestHigh(TechCandle[] candles, int startIndex, int endIndex)
 	{
 		double value = candles[startIndex].getHighPrice();
 
@@ -94,7 +94,7 @@ public class CandleUtils
 		return value;
 	}
 
-	public static double lowestLow(Candle[] candles, int startIndex, int endIndex)
+	public static double lowestLow(TechCandle[] candles, int startIndex, int endIndex)
 	{
 		double value = candles[startIndex].getLowPrice();
 
@@ -109,10 +109,10 @@ public class CandleUtils
 		return value;
 	}
 
-	public static Candle mergeCandles(Candle[] candles, int startIndex, int endIndex)
+	public static TechCandle mergeCandles(TechCandle[] candles, int startIndex, int endIndex)
 	{
 		double high = candles[startIndex].getHighPrice();
-		double low = candles[startIndex].getHighPrice();
+		double low = candles[startIndex].getLowPrice();
 		double volume = 0;
 		double quoteVolume = 0;
 		long count = 0;
@@ -133,7 +133,7 @@ public class CandleUtils
 			count += candles[i].getCount();
 		}
 
-		Candle newCandle = new Candle();
+		TechCandle newCandle = new TechCandle();
 		newCandle.setOpenTime(candles[startIndex].getOpenTime());
 		newCandle.setOpenPrice(candles[startIndex].getOpenPrice());
 		newCandle.setHighPrice(high);

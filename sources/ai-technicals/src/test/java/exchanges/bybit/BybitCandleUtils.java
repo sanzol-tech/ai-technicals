@@ -2,17 +2,17 @@ package exchanges.bybit;
 
 import java.util.List;
 
-import technicals.model.Candle;
+import technicals.model.TechCandle;
 
 public class BybitCandleUtils
 {
 
-	public static Candle[] toCandleArray(List<BybitCandle> lstCandles)
+	public static TechCandle[] toCandleArray(List<BybitCandle> lstCandles)
 	{
-		Candle[] candle = new Candle[lstCandles.size()];
+		TechCandle[] candle = new TechCandle[lstCandles.size()];
 		for (int i = 0; i < lstCandles.size(); i++)
 		{
-			candle[i] = new Candle();
+			candle[i] = new TechCandle();
 			candle[i].setOpenTime(lstCandles.get(i).getOpenTimeZoned());
 			candle[i].setOpenPrice(lstCandles.get(i).getOpen().doubleValue());
 			candle[i].setClosePrice(lstCandles.get(i).getClose().doubleValue());

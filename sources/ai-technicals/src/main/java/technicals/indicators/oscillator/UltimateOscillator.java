@@ -1,7 +1,7 @@
 package technicals.indicators.oscillator;
 
 import technicals.config.Labels;
-import technicals.model.Candle;
+import technicals.model.TechCandle;
 import technicals.model.indicators.IndicatorEntry;
 
 /**
@@ -10,12 +10,12 @@ import technicals.model.indicators.IndicatorEntry;
 public class UltimateOscillator
 {
 
-	public static IndicatorEntry[] calculate(Candle[] candles)
+	public static IndicatorEntry[] calculate(TechCandle[] candles)
 	{
 		return calculate(candles, 7, 14, 28);
 	}
 
-	public static IndicatorEntry[] calculate(Candle[] candles, int periods1, int periods2, int periods3)
+	public static IndicatorEntry[] calculate(TechCandle[] candles, int periods1, int periods2, int periods3)
 	{
 		if (periods1 >= periods2 || periods2 >= periods3)
 		{
@@ -47,7 +47,7 @@ public class UltimateOscillator
 		return uoEntries;
 	}
 
-	private static double calcAvg(Candle[] candles, int startIndex, int endIndex)
+	private static double calcAvg(TechCandle[] candles, int startIndex, int endIndex)
 	{
 		double sumBP = 0;
 		double sumTR = 0;

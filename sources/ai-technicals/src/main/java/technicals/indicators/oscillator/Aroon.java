@@ -1,7 +1,7 @@
 package technicals.indicators.oscillator;
 
 import technicals.config.Labels;
-import technicals.model.Candle;
+import technicals.model.TechCandle;
 import technicals.model.oscillator.AroonEntry;
 import technicals.util.CandleUtils;
 
@@ -11,12 +11,12 @@ import technicals.util.CandleUtils;
 public class Aroon
 {
 
-	public static AroonEntry[] calculate(Candle[] candles)
+	public static AroonEntry[] calculate(TechCandle[] candles)
 	{
 		return calculate(candles, 14);
 	}
 
-	public static AroonEntry[] calculate(Candle[] candles, int periods)
+	public static AroonEntry[] calculate(TechCandle[] candles, int periods)
 	{
 		if (candles.length < periods)
 		{

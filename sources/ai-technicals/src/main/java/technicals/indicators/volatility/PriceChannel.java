@@ -1,7 +1,7 @@
 package technicals.indicators.volatility;
 
 import technicals.config.Labels;
-import technicals.model.Candle;
+import technicals.model.TechCandle;
 import technicals.model.indicators.PriceChannelEntry;
 import technicals.util.CandleUtils;
 
@@ -11,12 +11,12 @@ import technicals.util.CandleUtils;
 public class PriceChannel
 {
 
-	public static PriceChannelEntry[] calculate(Candle[] candles)
+	public static PriceChannelEntry[] calculate(TechCandle[] candles)
 	{
 		return calculate(candles, 20);
 	}
 
-	public static PriceChannelEntry[] calculate(Candle[] candles, int periods)
+	public static PriceChannelEntry[] calculate(TechCandle[] candles, int periods)
 	{
 		if (candles.length < periods)
 		{

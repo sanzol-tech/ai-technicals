@@ -1,8 +1,8 @@
 package technicals.model.indicators;
 
-import technicals.model.Candle;
+import technicals.model.TechCandle;
 
-public class KeltnerChannelEntry extends Candle
+public class KeltnerChannelEntry extends TechCandle
 {
 	private double atr;
 	private double upperBand;
@@ -14,7 +14,7 @@ public class KeltnerChannelEntry extends Candle
 		//
 	}
 
-	public KeltnerChannelEntry(Candle candle)
+	public KeltnerChannelEntry(TechCandle candle)
 	{
 		openTime = candle.getOpenTime();
 		openPrice = candle.getOpenPrice();

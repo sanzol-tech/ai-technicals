@@ -1,8 +1,8 @@
 package technicals.model.oscillator;
 
-import technicals.model.Candle;
+import technicals.model.TechCandle;
 
-public class AroonEntry extends Candle
+public class AroonEntry extends TechCandle
 {
 	private double aroonUp;
 	private double aroonDown;
@@ -13,7 +13,7 @@ public class AroonEntry extends Candle
 		//
 	}
 
-	public AroonEntry(Candle candle)
+	public AroonEntry(TechCandle candle)
 	{
 		openTime = candle.getOpenTime();
 		openPrice = candle.getOpenPrice();

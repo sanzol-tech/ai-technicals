@@ -1,8 +1,8 @@
 package technicals.model.oscillator;
 
-import technicals.model.Candle;
+import technicals.model.TechCandle;
 
-public class StochRsiEntry extends Candle
+public class StochRsiEntry extends TechCandle
 {
 	private double rsi;
 	private double k1;
@@ -14,7 +14,7 @@ public class StochRsiEntry extends Candle
 		//
 	}
 
-	public StochRsiEntry(Candle candle)
+	public StochRsiEntry(TechCandle candle)
 	{
 		openTime = candle.getOpenTime();
 		openPrice = candle.getOpenPrice();

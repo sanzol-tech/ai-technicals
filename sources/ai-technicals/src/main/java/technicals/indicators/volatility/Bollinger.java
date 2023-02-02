@@ -2,7 +2,7 @@ package technicals.indicators.volatility;
 
 import technicals.config.Labels;
 import technicals.indicators.ma.SimpleMovingAverage;
-import technicals.model.Candle;
+import technicals.model.TechCandle;
 import technicals.model.indicators.BollingerEntry;
 import technicals.model.indicators.IndicatorEntry;
 
@@ -11,12 +11,12 @@ import technicals.model.indicators.IndicatorEntry;
  */
 public class Bollinger
 {
-	public static BollingerEntry[] calculate(Candle[] candles)
+	public static BollingerEntry[] calculate(TechCandle[] candles)
 	{
 		return calculate(candles, 20, 2);
 	}
 
-	public static BollingerEntry[] calculate(Candle[] candles, int periods, int mult)
+	public static BollingerEntry[] calculate(TechCandle[] candles, int periods, int mult)
 	{
 		if (candles.length <= periods)
 		{

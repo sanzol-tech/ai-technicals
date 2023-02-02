@@ -1,8 +1,8 @@
 package technicals.model.oscillator;
 
-import technicals.model.Candle;
+import technicals.model.TechCandle;
 
-public class AdxEntry extends Candle
+public class AdxEntry extends TechCandle
 {
 	private double tr1;
 	private double posDm1;
@@ -22,7 +22,7 @@ public class AdxEntry extends Candle
 		//
 	}
 
-	public AdxEntry(Candle candle)
+	public AdxEntry(TechCandle candle)
 	{
 		openTime = candle.getOpenTime();
 		openPrice = candle.getOpenPrice();

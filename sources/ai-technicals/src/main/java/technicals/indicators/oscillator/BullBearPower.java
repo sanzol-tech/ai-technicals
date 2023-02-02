@@ -2,7 +2,7 @@ package technicals.indicators.oscillator;
 
 import technicals.config.Labels;
 import technicals.indicators.ma.ExponentialMovingAverage;
-import technicals.model.Candle;
+import technicals.model.TechCandle;
 import technicals.model.indicators.IndicatorEntry;
 
 /**
@@ -10,12 +10,12 @@ import technicals.model.indicators.IndicatorEntry;
  */
 public class BullBearPower
 {
-	public static IndicatorEntry[] calculate(Candle[] candles)
+	public static IndicatorEntry[] calculate(TechCandle[] candles)
 	{
 		return calculate(candles, 13);
 	}
 
-	public static IndicatorEntry[] calculate(Candle[] candles, int periods)
+	public static IndicatorEntry[] calculate(TechCandle[] candles, int periods)
 	{
 		if (candles.length < periods)
 		{

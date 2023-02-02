@@ -1,8 +1,8 @@
 package technicals.model.indicators;
 
-import technicals.model.Candle;
+import technicals.model.TechCandle;
 
-public class AtrEntry extends Candle
+public class AtrEntry extends TechCandle
 {
 	private double tr;
 	private double atr;
@@ -12,7 +12,7 @@ public class AtrEntry extends Candle
 		//
 	}
 
-	public AtrEntry(Candle candle)
+	public AtrEntry(TechCandle candle)
 	{
 		openTime = candle.getOpenTime();
 		openPrice = candle.getOpenPrice();

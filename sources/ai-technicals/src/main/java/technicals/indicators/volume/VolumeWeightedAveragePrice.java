@@ -1,7 +1,7 @@
 package technicals.indicators.volume;
 
 import technicals.config.Labels;
-import technicals.model.Candle;
+import technicals.model.TechCandle;
 import technicals.model.indicators.VWAPEntry;
 
 /**
@@ -10,7 +10,7 @@ import technicals.model.indicators.VWAPEntry;
 public class VolumeWeightedAveragePrice
 {
 
-	public static VWAPEntry[] calculate(Candle[] candles)
+	public static VWAPEntry[] calculate(TechCandle[] candles)
 	{
 		if (candles.length < 2)
 		{
@@ -29,7 +29,7 @@ public class VolumeWeightedAveragePrice
 
 		for (int i = 1; i < candles.length; i++)
 		{
-			Candle curr = candles[i];
+			TechCandle curr = candles[i];
 			entries[i] = new VWAPEntry(curr);
 			tpv = curr.getHLC3() * curr.getVolume();
 			entries[i].setTpv(tpv);

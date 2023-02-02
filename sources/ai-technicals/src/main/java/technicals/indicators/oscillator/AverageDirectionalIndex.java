@@ -1,7 +1,7 @@
 package technicals.indicators.oscillator;
 
 import technicals.config.Labels;
-import technicals.model.Candle;
+import technicals.model.TechCandle;
 import technicals.model.oscillator.AdxEntry;
 
 /**
@@ -10,12 +10,12 @@ import technicals.model.oscillator.AdxEntry;
 public class AverageDirectionalIndex
 {
 
-	public static AdxEntry[] calculate(Candle[] candles)
+	public static AdxEntry[] calculate(TechCandle[] candles)
 	{
 		return calculate(candles, 14);
 	}
 
-	public static AdxEntry[] calculate(Candle[] candles, int periods)
+	public static AdxEntry[] calculate(TechCandle[] candles, int periods)
 	{
 		if (candles.length < periods + 1)
 		{
@@ -53,9 +53,9 @@ public class AverageDirectionalIndex
 		return adxEntries;
 	}
 
-	// -----
+	// --------------------------------------------------------------------
 
-	private static double trueRange(Candle[] candles, int index)
+	private static double trueRange(TechCandle[] candles, int index)
 	{
 		double tr = candles[index].getHighPrice() - candles[index].getLowPrice();
 
@@ -70,7 +70,7 @@ public class AverageDirectionalIndex
 		return tr;
 	}
 
-	private static double positiveDirectionalMovement(Candle[] candles, int index)
+	private static double positiveDirectionalMovement(TechCandle[] candles, int index)
 	{
 		if ((candles[index].getHighPrice() - candles[index - 1].getHighPrice()) > (candles[index - 1].getLowPrice() - candles[index].getLowPrice()))
 		{
@@ -82,7 +82,7 @@ public class AverageDirectionalIndex
 		}
 	}
 
-	private static double negativeDirectionalMovement(Candle[] candles, int index)
+	private static double negativeDirectionalMovement(TechCandle[] candles, int index)
 	{
 		if ((candles[index - 1].getLowPrice() - candles[index].getLowPrice()) > (candles[index].getHighPrice() - candles[index - 1].getHighPrice()))
 		{
@@ -94,7 +94,7 @@ public class AverageDirectionalIndex
 		}
 	}
 
-	// -----
+	// --------------------------------------------------------------------
 
 	private static double trueRange(AdxEntry[] entries, int index, int periods)
 	{
@@ -163,7 +163,7 @@ public class AverageDirectionalIndex
 		}
 	}
 
-	// -----
+	// --------------------------------------------------------------------
 
 	private static double positiveDirectionalIndicator(AdxEntry[] entries, int index, int periods)
 	{

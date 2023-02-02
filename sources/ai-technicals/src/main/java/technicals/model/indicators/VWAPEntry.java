@@ -1,8 +1,8 @@
 package technicals.model.indicators;
 
-import technicals.model.Candle;
+import technicals.model.TechCandle;
 
-public class VWAPEntry extends Candle
+public class VWAPEntry extends TechCandle
 {
 	private double tpv;
 	private double vwap;
@@ -12,7 +12,7 @@ public class VWAPEntry extends Candle
 		//
 	}
 
-	public VWAPEntry(Candle candle)
+	public VWAPEntry(TechCandle candle)
 	{
 		openTime = candle.getOpenTime();
 		openPrice = candle.getOpenPrice();

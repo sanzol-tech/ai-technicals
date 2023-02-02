@@ -1,8 +1,8 @@
 package technicals.model.oscillator;
 
-import technicals.model.Candle;
+import technicals.model.TechCandle;
 
-public class StochasticEntry extends Candle
+public class StochasticEntry extends TechCandle
 {
 	private double highestHigh;
 	private double lowestLow;
@@ -15,7 +15,7 @@ public class StochasticEntry extends Candle
 		//
 	}
 
-	public StochasticEntry(Candle candle)
+	public StochasticEntry(TechCandle candle)
 	{
 		openTime = candle.getOpenTime();
 		openPrice = candle.getOpenPrice();

@@ -1,7 +1,7 @@
 package technicals.indicators.oscillator;
 
 import technicals.config.Labels;
-import technicals.model.Candle;
+import technicals.model.TechCandle;
 import technicals.model.oscillator.RsiEntry;
 import technicals.model.oscillator.StochRsiEntry;
 
@@ -11,12 +11,12 @@ import technicals.model.oscillator.StochRsiEntry;
 public class StochasticRSI
 {
 
-	public static StochRsiEntry[] calculate(Candle[] candles)
+	public static StochRsiEntry[] calculate(TechCandle[] candles)
 	{
 		return calculate(candles, 14, 14, 3, 3);
 	}
 
-	public static StochRsiEntry[] calculate(Candle[] candles, int periodsRsi, int periodsStoch, int smoothK, int smoothD)
+	public static StochRsiEntry[] calculate(TechCandle[] candles, int periodsRsi, int periodsStoch, int smoothK, int smoothD)
 	{
 		if (candles.length < periodsRsi + periodsStoch)
 		{

@@ -1,7 +1,7 @@
 package technicals.indicators.ma;
 
 import technicals.config.Labels;
-import technicals.model.Candle;
+import technicals.model.TechCandle;
 import technicals.model.indicators.IndicatorEntry;
 import technicals.util.CandleUtils;
 import technicals.util.DoubleArrayUtils;
@@ -30,7 +30,7 @@ public class SimpleMovingAverage
 		return results;
 	}
 
-	public static IndicatorEntry[] calculate(Candle[] candles, int periods)
+	public static IndicatorEntry[] calculate(TechCandle[] candles, int periods)
 	{
 		if (candles.length < periods)
 		{

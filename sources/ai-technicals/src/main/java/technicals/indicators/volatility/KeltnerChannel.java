@@ -2,7 +2,7 @@ package technicals.indicators.volatility;
 
 import technicals.config.Labels;
 import technicals.indicators.ma.ExponentialMovingAverage;
-import technicals.model.Candle;
+import technicals.model.TechCandle;
 import technicals.model.indicators.AtrEntry;
 import technicals.model.indicators.IndicatorEntry;
 import technicals.model.indicators.KeltnerChannelEntry;
@@ -10,12 +10,12 @@ import technicals.model.indicators.KeltnerChannelEntry;
 public class KeltnerChannel
 {
 
-	public static KeltnerChannelEntry[] calculate(Candle[] candles)
+	public static KeltnerChannelEntry[] calculate(TechCandle[] candles)
 	{
 		return calculate(candles, 20, 1);
 	}
 
-	public static KeltnerChannelEntry[] calculate(Candle[] candles, int periods, double multiplier)
+	public static KeltnerChannelEntry[] calculate(TechCandle[] candles, int periods, double multiplier)
 	{
 		if (candles.length < periods)
 		{

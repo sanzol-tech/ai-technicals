@@ -1,7 +1,7 @@
 package technicals.indicators.volume;
 
 import technicals.config.Labels;
-import technicals.model.Candle;
+import technicals.model.TechCandle;
 import technicals.model.indicators.IndicatorEntry;
 
 /**
@@ -10,7 +10,7 @@ import technicals.model.indicators.IndicatorEntry;
 public class AccumulationDistribution
 {
 
-	public static IndicatorEntry[] calculate(Candle[] candles)
+	public static IndicatorEntry[] calculate(TechCandle[] candles)
 	{
 		if (candles.length < 2)
 		{
@@ -21,7 +21,7 @@ public class AccumulationDistribution
 
 		for (int i = 0; i < candles.length; i++)
 		{
-			Candle curr = candles[i];
+			TechCandle curr = candles[i];
 
 			double mfm = ( (curr.getClosePrice() - curr.getLowPrice()) - (curr.getHighPrice() - curr.getClosePrice()) ) / ( curr.getHighPrice() - curr.getLowPrice() );
 			double mfv = mfm * curr.getVolume();

@@ -1,8 +1,8 @@
 package technicals.model.indicators;
 
-import technicals.model.Candle;
+import technicals.model.TechCandle;
 
-public class BollingerEntry extends Candle
+public class BollingerEntry extends TechCandle
 {
 	private double standardDeviation;
 	private double upperBand;
@@ -14,7 +14,7 @@ public class BollingerEntry extends Candle
 		//
 	}
 
-	public BollingerEntry(Candle candle)
+	public BollingerEntry(TechCandle candle)
 	{
 		openTime = candle.getOpenTime();
 		openPrice = candle.getOpenPrice();

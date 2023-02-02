@@ -1,7 +1,7 @@
 package technicals.indicators.oscillator;
 
 import technicals.config.Labels;
-import technicals.model.Candle;
+import technicals.model.TechCandle;
 import technicals.model.oscillator.StochasticEntry;
 import technicals.util.CandleUtils;
 
@@ -11,12 +11,12 @@ import technicals.util.CandleUtils;
 public class Stochastic
 {
 
-	public static StochasticEntry[] calculate(Candle[] candles)
+	public static StochasticEntry[] calculate(TechCandle[] candles)
 	{
 		return calculate(candles, 14, 1, 3);
 	}
 
-	public static StochasticEntry[] calculate(Candle[] candles, int periods, int smoothK, int smoothD)
+	public static StochasticEntry[] calculate(TechCandle[] candles, int periods, int smoothK, int smoothD)
 	{
 		if (candles.length < periods)
 		{

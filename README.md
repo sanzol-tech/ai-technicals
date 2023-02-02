@@ -6,10 +6,12 @@ Java library for financial technical analysis with multiple technical indicators
 - WMA - Weighted Moving Average
 - EMA - Exponential Moving Average
 - VWMA - Volume-Weighted Moving Average
+- HMA - Hull Moving Average
 
 ### Oscillators
 - Aroon
 - ADX - Average Directional Index
+- AO - Awesome Oscillator
 - BBP - Bull Bear Power
 - CCI - Commodity Channel Index
 - MACD - Moving Average Convergence / Divergence
@@ -42,7 +44,18 @@ Java library for financial technical analysis with multiple technical indicators
 - Woodie Pivot Points
 
 ### Others
+- Ichimoku Cloud
 - Williams Fractals
+
+### Technical Ratings
+- Technical Ratings
+
+### Order Book Depth Indicators
+- Block Points
+- Weighted Points
+- Super Blocks
+- Delta
+- Middle Price
 
 ## How to use the library
 

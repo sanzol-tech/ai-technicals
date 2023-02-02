@@ -1,7 +1,7 @@
 package technicals.indicators.ma;
 
 import technicals.config.Labels;
-import technicals.model.Candle;
+import technicals.model.TechCandle;
 import technicals.model.indicators.IndicatorEntry;
 
 /**
@@ -10,7 +10,7 @@ import technicals.model.indicators.IndicatorEntry;
 public class VWMovingAverage
 {
 
-	public static IndicatorEntry[] calculate(Candle[] candles, int periods)
+	public static IndicatorEntry[] calculate(TechCandle[] candles, int periods)
 	{
 		if (candles.length < periods)
 		{
@@ -29,7 +29,7 @@ public class VWMovingAverage
 		return smaEntries;
 	}
 
-	private static double calcAvg(Candle[] candles, int startIndex, int periods)
+	private static double calcAvg(TechCandle[] candles, int startIndex, int periods)
 	{
 		double sum = 0;
 		double vol = 0;

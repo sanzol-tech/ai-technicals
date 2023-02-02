@@ -1,7 +1,7 @@
 package technicals.indicators.volume;
 
 import technicals.config.Labels;
-import technicals.model.Candle;
+import technicals.model.TechCandle;
 import technicals.model.indicators.IndicatorEntry;
 
 /**
@@ -10,7 +10,7 @@ import technicals.model.indicators.IndicatorEntry;
 public class OnBalanceVolume
 {
 
-	public static IndicatorEntry[] calculate(Candle[] candles)
+	public static IndicatorEntry[] calculate(TechCandle[] candles)
 	{
 		if (candles.length < 2)
 		{
@@ -24,8 +24,8 @@ public class OnBalanceVolume
 
 		for (int i = 1; i < candles.length; i++)
 		{
-			Candle prev = candles[i - 1];
-			Candle curr = candles[i];
+			TechCandle prev = candles[i - 1];
+			TechCandle curr = candles[i];
 			entries[i] = new IndicatorEntry(curr);
 
 			if (curr.getClosePrice() > prev.getClosePrice())

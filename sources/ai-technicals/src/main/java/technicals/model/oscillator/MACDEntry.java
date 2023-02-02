@@ -1,8 +1,8 @@
 package technicals.model.oscillator;
 
-import technicals.model.Candle;
+import technicals.model.TechCandle;
 
-public class MACDEntry extends Candle
+public class MACDEntry extends TechCandle
 {
 	private double emaFast;
 	private double emaSlow;
@@ -15,7 +15,7 @@ public class MACDEntry extends Candle
 		//
 	}
 
-	public MACDEntry(Candle candle)
+	public MACDEntry(TechCandle candle)
 	{
 		openTime = candle.getOpenTime();
 		openPrice = candle.getOpenPrice();
@@ -25,7 +25,7 @@ public class MACDEntry extends Candle
 		volume = candle.getVolume();
 	}
 
-	public MACDEntry(Candle candle, double emaFast, double emaSlow, double macd, double signal, double histogram)
+	public MACDEntry(TechCandle candle, double emaFast, double emaSlow, double macd, double signal, double histogram)
 	{
 		openTime = candle.getOpenTime();
 		openPrice = candle.getOpenPrice();

@@ -1,8 +1,8 @@
 package technicals.model.indicators;
 
-import technicals.model.Candle;
+import technicals.model.TechCandle;
 
-public class PriceChannelEntry extends Candle
+public class PriceChannelEntry extends TechCandle
 {
 	private double upperChannel;
 	private double centerLine;
@@ -13,7 +13,7 @@ public class PriceChannelEntry extends Candle
 		//
 	}
 
-	public PriceChannelEntry(Candle candle)
+	public PriceChannelEntry(TechCandle candle)
 	{
 		openTime = candle.getOpenTime();
 		openPrice = candle.getOpenPrice();

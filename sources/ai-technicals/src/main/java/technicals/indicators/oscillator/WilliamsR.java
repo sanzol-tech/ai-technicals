@@ -1,7 +1,7 @@
 package technicals.indicators.oscillator;
 
 import technicals.config.Labels;
-import technicals.model.Candle;
+import technicals.model.TechCandle;
 import technicals.model.oscillator.WilliamsREntry;
 import technicals.util.CandleUtils;
 
@@ -11,12 +11,12 @@ import technicals.util.CandleUtils;
 public class WilliamsR
 {
 
-	public static WilliamsREntry[] calculate(Candle[] candles)
+	public static WilliamsREntry[] calculate(TechCandle[] candles)
 	{
 		return calculate(candles, 14);
 	}
 
-	public static WilliamsREntry[] calculate(Candle[] candles, int periods)
+	public static WilliamsREntry[] calculate(TechCandle[] candles, int periods)
 	{
 		if (candles.length < periods)
 		{

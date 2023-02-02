@@ -8,10 +8,11 @@ import exchanges.binance.BinanceCandle;
 import exchanges.binance.BinanceCandleUtils;
 import exchanges.binance.BinanceIntervalType;
 import technicals.indicators.ma.ExponentialMovingAverage;
+import technicals.indicators.ma.HullMovingAverage;
 import technicals.indicators.ma.SimpleMovingAverage;
 import technicals.indicators.ma.VWMovingAverage;
 import technicals.indicators.ma.WeightedMovingAverage;
-import technicals.model.Candle;
+import technicals.model.TechCandle;
 import technicals.model.indicators.IndicatorEntry;
 
 public class MovingAverage_
@@ -19,13 +20,14 @@ public class MovingAverage_
 
 	public static void main(String[] args) throws Exception
 	{
-		List<BinanceCandle> lstBinanceCandles = BinanceApiClient.getKlines("BTCUSDT", BinanceIntervalType._1d, 20);
-		Candle[] candles = BinanceCandleUtils.toCandleArray(lstBinanceCandles);
+		List<BinanceCandle> lstBinanceCandles = BinanceApiClient.getKlines("BTCUSDT", BinanceIntervalType._1d, 30);
+		TechCandle[] candles = BinanceCandleUtils.toCandleArray(lstBinanceCandles);
 
 		IndicatorEntry[] smaEntries = SimpleMovingAverage.calculate(candles, 9);
 		IndicatorEntry[] wmaEntries = WeightedMovingAverage.calculate(candles, 9);
 		IndicatorEntry[] emaEntries = ExponentialMovingAverage.calculate(candles, 9);
 		IndicatorEntry[] vwmaEntries = VWMovingAverage.calculate(candles, 9);
+		IndicatorEntry[] hmaEntries = HullMovingAverage.calculate(candles, 9);
 
 		System.out.println("sma");
 		Arrays.stream(smaEntries).forEach(s -> System.out.println(s));
@@ -35,6 +37,8 @@ public class MovingAverage_
 		Arrays.stream(emaEntries).forEach(s -> System.out.println(s));
 		System.out.println("vwma");
 		Arrays.stream(vwmaEntries).forEach(s -> System.out.println(s));
+		System.out.println("hma");
+		Arrays.stream(hmaEntries).forEach(s -> System.out.println(s));
 	}
 
 }
