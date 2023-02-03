@@ -6,6 +6,7 @@ import java.util.Arrays;
 
 import technicals.config.Labels;
 import technicals.indicators.ma.ExponentialMovingAverage;
+import technicals.indicators.ma.HullMovingAverage;
 import technicals.indicators.ma.SimpleMovingAverage;
 import technicals.indicators.ma.VWMovingAverage;
 import technicals.indicators.misc.Ichimoku;
@@ -30,7 +31,6 @@ import technicals.model.oscillator.RsiEntry;
 import technicals.model.oscillator.StochRsiEntry;
 import technicals.model.oscillator.StochasticEntry;
 import technicals.model.oscillator.WilliamsREntry;
-import technicals.util.CandleUtils;
 
 public class TechnicalRatings
 {
@@ -49,7 +49,6 @@ public class TechnicalRatings
 	private int pricePrecision;
 
 	private TechCandle[] candles;
-	private TechCandle candleMerged;
 
 	private double atr;
 
@@ -59,6 +58,10 @@ public class TechnicalRatings
 	private int[] emaTrend = new int[MA_PERIODS.length];
 	private double vwma;
 	private int vwmaTrend;
+	private double hma;
+	private int hmaTrend;
+	private double ichimokuBaseLine;
+	private int ichimokuTrend;
 
 	private double maRatingSum;
 	private double maRatingCount;
@@ -89,8 +92,6 @@ public class TechnicalRatings
 	private double oscRatingSum;
 	private double oscRatingCount;
 	private RatingStatus oscRatingStatus; 
-	
-	private RatingStatus ratingStatus; 
 
 	// ---- CONSTRUCTOR ----------------------------------------------------------------
 	
@@ -104,11 +105,6 @@ public class TechnicalRatings
 	public TechCandle[] getCandles()
 	{
 		return candles;
-	}
-
-	public TechCandle getCandleMerged()
-	{
-		return candleMerged;
 	}
 
 	public double getAtr()
@@ -144,6 +140,26 @@ public class TechnicalRatings
 	public int getVwmaTrend()
 	{
 		return vwmaTrend;
+	}
+
+	public double getHma()
+	{
+		return hma;
+	}
+
+	public int getHmaTrend()
+	{
+		return hmaTrend;
+	}
+
+	public double getIchimokuBaseLine()
+	{
+		return ichimokuBaseLine;
+	}
+
+	public int getIchimokuTrend()
+	{
+		return ichimokuTrend;
 	}
 
 	public RatingStatus getMaRatingStatus()
@@ -261,11 +277,6 @@ public class TechnicalRatings
 		return oscRatingStatus;
 	}
 
-	public RatingStatus getRatingStatus()
-	{
-		return ratingStatus;
-	}
-
 	// ---- Calc -----------------------------------------------------------------------
 
 	public static int minCandlesLengh()
@@ -282,11 +293,8 @@ public class TechnicalRatings
 
 		this.candles = candles;
 
-		// ---- Merge ------------------------------------------------
-		candleMerged = CandleUtils.mergeCandles(candles, 0, candles.length - 1);
-
 		// ---- Volatility -------------------------------------------
-		AtrEntry[] atrEntries = AverageTrueRange.calculate(candles, 55);
+		AtrEntry[] atrEntries = AverageTrueRange.calculate(candles, 28);
 		atr = atrEntries[atrEntries.length - 1].getAtr();
 
 		// ---- Trend ------------------------------------------------
@@ -297,31 +305,14 @@ public class TechnicalRatings
 		calcOscillators();
 		calcOscRating();
 		
-		// ---- Rating Status ----------------------------------------
-		calcRating();
 	}
 
-	private void calcRating()
-	{
-		double rating = (maRatingSum + oscRatingSum) / (maRatingCount + oscRatingCount);
-
-		if (rating < -0.5)
-			ratingStatus = RatingStatus.STRONG_SELL;
-		else if (rating > 0.5)
-			ratingStatus = RatingStatus.STRONG_BUY;
-		else if (rating < -0.1 && rating >= -0.5)
-			ratingStatus = RatingStatus.SELL;
-		else if (rating > 0.1 && rating <= 0.5)
-			ratingStatus = RatingStatus.BUY;
-		else
-			ratingStatus = RatingStatus.NEUTRAL;
-	}
-
-	// ---- Trend ----------------------------------------------------------------------
+	// ---- Moving Averages ------------------------------------------------------------
 
 	public void calcMovingAverages()
 	{
 		double closePrice = last(candles).getClosePrice();
+		double closePricePrev = prev1(candles).getClosePrice();
 
 		// SMA
 		for (int i = 0; i < MA_PERIODS.length; i++)
@@ -344,44 +335,72 @@ public class TechnicalRatings
 		vwma = last(vwmaEntries).getValue();
 		vwmaTrend = calcMAvgTrend(vwma, closePrice);
 
+		// HMA
+		IndicatorEntry[] hmaEntries = HullMovingAverage.calculate(candles, MA_PERIODS[0]);
+		hma = last(hmaEntries).getValue();
+		hmaTrend = calcMAvgTrend(hma, closePrice);
+
 		// ICHIMOKU
 		IchimokuEntry[] ichimokuEntries = Ichimoku.calculate(candles);
-		double ichimokuBaseLine = last(ichimokuEntries).getBaseLine();
+		ichimokuBaseLine = last(ichimokuEntries).getBaseLine();
 
-		/*
-		if (getLeadingSpanA() > getLeadingSpanB() && 
-			getClosePrice() > getLeadingSpanA() && 
-			getClosePrice() < ichimokuBaseLine && 
-			getClosePrice()[1] < getConversionLine() && 
-			getClosePrice() > getConversionLine())
-
-		if (getLeadingSpanB() > getLeadingSpanA() && 
-			getClosePrice() < getLeadingSpanB() && 
-			getClosePrice() > ichimokuBaseLine && 
-			getClosePrice()[1] > getConversionLine() && 
-			getClosePrice() < getConversionLine())
-		*/
+		if (ichimokuBaseLine > closePrice && 
+			last(ichimokuEntries).getConversionLine() < closePrice &&
+			last(ichimokuEntries).getConversionLine() > closePricePrev &&
+			last(ichimokuEntries).getLeadingSpanA() < closePrice && 
+			last(ichimokuEntries).getLeadingSpanA() > last(ichimokuEntries).getLeadingSpanB())
+		{
+			ichimokuTrend = UP_TREND;
+		} else if (ichimokuBaseLine < closePrice && 
+				 last(ichimokuEntries).getConversionLine() > closePrice && 
+				 last(ichimokuEntries).getConversionLine() < closePricePrev &&
+				 last(ichimokuEntries).getLeadingSpanA() > closePrice && 
+				 last(ichimokuEntries).getLeadingSpanA() < last(ichimokuEntries).getLeadingSpanB())
+		{
+			ichimokuTrend = UP_TREND;
+		} else {
+			ichimokuTrend = NEUTRAL_TREND;
+		}
 
 	}
 
 	private int calcMAvgTrend(double avgPrice, double closePrice)
 	{
-		BigDecimal ma = BigDecimal.valueOf(avgPrice).setScale(pricePrecision - 1, RoundingMode.HALF_UP);
-
-		return (ma.doubleValue() < closePrice) ? UP_TREND : (ma.doubleValue() > closePrice) ? DOWN_TREND : NEUTRAL_TREND;
+		BigDecimal close = BigDecimal.valueOf(closePrice).setScale(pricePrecision - 1, RoundingMode.HALF_UP);
+		BigDecimal price = BigDecimal.valueOf(avgPrice).setScale(pricePrecision - 1, RoundingMode.HALF_UP);
+		
+		return (price.doubleValue() < close.doubleValue()) ? UP_TREND : (price.doubleValue() > close.doubleValue()) ? DOWN_TREND : NEUTRAL_TREND;
 	}
 
 	private void calcMARating()
 	{
-		maRatingCount = (1 + (2 * MA_PERIODS.length));
-		
-		maRatingSum = vwmaTrend;
+		maRatingSum = 0;
+		maRatingCount = 0;
+
 		for (int i = 0; i < MA_PERIODS.length; i++)
 		{
-			maRatingSum += smaTrend[i] + emaTrend[i];
+			maRatingSum += smaTrend[i];
+			maRatingCount++;
 		}
+
+		for (int i = 0; i < MA_PERIODS.length; i++)
+		{
+			maRatingSum += emaTrend[i];
+			maRatingCount++;
+		}
+
+		maRatingSum += vwmaTrend;
+		maRatingCount++;
+
+		maRatingSum += hmaTrend;
+		maRatingCount++;
+
+		maRatingSum += ichimokuTrend;
+		maRatingCount++;
+		
 		double rating = maRatingSum / maRatingCount;  
 
+		// -------------------------------------------
 		if (rating < -0.5)
 			maRatingStatus = RatingStatus.STRONG_SELL;
 		else if (rating > 0.5)
@@ -393,11 +412,15 @@ public class TechnicalRatings
 		else
 			maRatingStatus = RatingStatus.NEUTRAL;
 
-		// --- Trend ------------
-		trend = (rating > 0.12) ? UP_TREND : (rating < -0.12) ? DOWN_TREND : NEUTRAL_TREND;
+		// --- Trend ---------------------------------
+
+		// trend = (rating > 0.1) ? UP_TREND : (rating < -0.1) ? DOWN_TREND : NEUTRAL_TREND;
+		trend = emaTrend[0];
 	}
 
 	// ---------------------------------------------------------------------------------
+
+	// ---- Oscillators ----------------------------------------------------------------
 
 	public void calcOscillators()
 	{
@@ -523,6 +546,8 @@ public class TechnicalRatings
 	}
 
 	// ---------------------------------------------------------------------------------
+	
+	// ---------------------------------------------------------------------------------
 
 	private static <T> T last(T[] t)
 	{
@@ -544,15 +569,19 @@ public class TechnicalRatings
 	@Override
 	public String toString()
 	{
-		return "atr=" + atr + " atr%=" + atr / candles[candles.length - 1].getClosePrice()
+		return "closePrice=" + candles[candles.length - 1].getClosePrice()
+				+ "\natr=" + atr + " atr%=" + atr / candles[candles.length - 1].getClosePrice()
 				+ "\nsma=" + Arrays.toString(sma) + "\nsmaTrend=" + Arrays.toString(smaTrend) 
 				+ "\nema=" + Arrays.toString(ema) + "\nemaTrend=" + Arrays.toString(emaTrend)
-				+ "\nvwma=" + vwma + "\nvwmaTrend=" + vwmaTrend + "\nmaRatingSum=" + maRatingSum + "\nmaRatingCount=" + maRatingCount
-				+ "\nmaRatingStatus=" + maRatingStatus + "\ntrend=" + trend + "\nrsi=" + rsi + "\nrsiStatus=" + rsiStatus + "\nstoch=" + stoch + "\nstochStatus=" + stochStatus
-				+ "\ncci=" + cci + "\ncciStatus=" + cciStatus + "\nadx=" + adx + "\nadxStatus=" + adxStatus + "\nao=" + ao + "\naoStatus=" + aoStatus + "\nmacd=" + macd + "\nmacdStatus=" + macdStatus + "\nstochRsi="
-				+ stochRsi + "\nstochRsiStatus=" + stochRsiStatus + "\nwilliamsR=" + williamsR + "\nwilliamsRStatus=" + williamsRStatus + "\nbbp=" + bbp + "\nbbpStatus="
-				+ bbpStatus + "\nuo=" + uo + "\nuoStatus=" + uoStatus + "\noscRatingSum=" + oscRatingSum + "\noscRatingCount=" + oscRatingCount + "\noscRatingStatus="
-				+ oscRatingStatus + "\nratingStatus=" + ratingStatus;
+				+ "\nvwma=" + vwma + ", vwmaTrend=" + vwmaTrend 
+				+ "\nhma=" + hma + ", hmaTrend=" + hmaTrend 
+				+ "\nichimokuBaseLine=" + ichimokuBaseLine + ", ichimokuTrend=" + ichimokuTrend 
+				+ "\n\nmaRatingStatus=" + maRatingStatus + ", maRatingSum=" + maRatingSum + ", maRatingCount=" + maRatingCount 
+				+ "\n\ntrend=" + trend + "\nrsi=" + rsi + "\nrsiStatus=" + rsiStatus + "\nstoch=" + stoch + "\nstochStatus=" + stochStatus
+				+ "\ncci=" + cci + "\ncciStatus=" + cciStatus + "\nadx=" + adx + "\nadxStatus=" + adxStatus + "\nao=" + ao + "\naoStatus=" + aoStatus + "\nmacd=" + macd 
+				+ "\nmacdStatus=" + macdStatus + "\nstochRsi=" + stochRsi + "\nstochRsiStatus=" + stochRsiStatus + "\nwilliamsR=" + williamsR + "\nwilliamsRStatus=" + williamsRStatus 
+				+ "\nbbp=" + bbp + "\nbbpStatus=" + bbpStatus + "\nuo=" + uo + "\nuoStatus=" + uoStatus 
+				+ "\n\noscRatingStatus=" + oscRatingStatus + ", oscRatingSum=" + oscRatingSum + ", oscRatingCount=" + oscRatingCount; 
 	}
-
+	
 }

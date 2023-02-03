@@ -109,6 +109,11 @@ public class CandleUtils
 		return value;
 	}
 
+	public static TechCandle mergeLastCandles(TechCandle[] candles, int periods)
+	{
+		return mergeCandles(candles, candles.length - periods, candles.length - 1);
+	}
+
 	public static TechCandle mergeCandles(TechCandle[] candles, int startIndex, int endIndex)
 	{
 		double high = candles[startIndex].getHighPrice();
