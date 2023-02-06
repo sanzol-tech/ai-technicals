@@ -48,7 +48,7 @@ public class DephMergedPoints
 		return new DephMergedPoints();
 	}
 
-	public void calculate(DepthBlockPoints depthBlockPoints, DepthWeightedPoints depthWeightedPoints, MergeMode mode)
+	public DephMergedPoints calculate(DepthBlockPoints depthBlockPoints, DepthWeightedPoints depthWeightedPoints, MergeMode mode)
 	{
 		if (mode == MergeMode.BB)
 		{
@@ -85,14 +85,13 @@ public class DephMergedPoints
 				s2 = depthWeightedPoints.getS2();
 			else
 				s2 = depthBlockPoints.getS2();
-
-			return;
 		}
 		else if (mode == MergeMode.MIN)
 		{
 			// TODO
 		}
 
+		return this;
 	}
 
 }

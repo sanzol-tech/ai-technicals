@@ -5,7 +5,7 @@ import java.util.List;
 
 import exchanges.binance.BinanceApiClient;
 import exchanges.binance.BinanceCandle;
-import exchanges.binance.BinanceCandleUtils;
+import exchanges.binance.BinanceUtils;
 import exchanges.binance.BinanceIntervalType;
 import technicals.indicators.volatility.Bollinger;
 import technicals.model.TechCandle;
@@ -23,7 +23,7 @@ public class Bollinger_
 		// TechCandle[] candles = BybitCandleUtils.toCandleArray(lstBybitCandle);
 
 		List<BinanceCandle> lstBinanceCandles = BinanceApiClient.getKlines("BTCUSDT", BinanceIntervalType._1d, 30);
-		TechCandle[] candles = BinanceCandleUtils.toCandleArray(lstBinanceCandles);
+		TechCandle[] candles = BinanceUtils.toCandleArray(lstBinanceCandles);
 
 		BollingerEntry[] entries = Bollinger.calculate(candles, 20, 2);
 

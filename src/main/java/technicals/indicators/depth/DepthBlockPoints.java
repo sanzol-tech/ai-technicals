@@ -5,6 +5,7 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
+import technicals.model.OrderBook;
 import technicals.model.OrderBookEntry;
 
 /**
@@ -12,6 +13,8 @@ import technicals.model.OrderBookEntry;
  */
 public class DepthBlockPoints
 {
+	private OrderBook orderBook;
+
 	private BigDecimal blockSize1;
 	private List<OrderBookEntry> asksGrp1;
 	private List<OrderBookEntry> bidsGrp1;
@@ -24,6 +27,11 @@ public class DepthBlockPoints
 	private BigDecimal s1;
 	private BigDecimal r2;
 	private BigDecimal s2;
+
+	public DepthBlockPoints(OrderBook orderBook)
+	{
+		this.orderBook = orderBook;
+	}
 
 	public BigDecimal getBlockSize1()
 	{
@@ -75,14 +83,14 @@ public class DepthBlockPoints
 		return s2;
 	}
 
-	public static DepthBlockPoints getInstance()
+	public DepthBlockPoints calculate(int blocks)
 	{
-		return new DepthBlockPoints();
-	}
+		List<OrderBookEntry> lstAsks = orderBook.getAsksList();
+		List<OrderBookEntry> lstBids = orderBook.getBidsList(); 
 
-	public void calculate(List<OrderBookEntry> lstAsks, List<OrderBookEntry> lstBids, int blocks)
-	{
-		BigDecimal pp = BigDecimal.valueOf((lstAsks.get(0).getPrice().doubleValue() + lstBids.get(0).getPrice().doubleValue()) / 2);
+		double firstAskPrice = orderBook.getAsks().firstEntry().getValue().getPrice().doubleValue();
+		double firstBidPrice = orderBook.getBids().firstEntry().getValue().getPrice().doubleValue();
+		BigDecimal pp = BigDecimal.valueOf((firstAskPrice + firstBidPrice) / 2);
 
 		blockSize1 = getBlockSize(pp, BigDecimal.valueOf(1));
 		blockSize2 = getBlockSize(pp, BigDecimal.valueOf(10));
@@ -96,7 +104,7 @@ public class DepthBlockPoints
 		BigDecimal bidPriceTo1 = bidPriceFrom1.subtract(blockSize1.multiply(BigDecimal.valueOf(blocks)));
 		BigDecimal askPriceTo2 = askPriceFrom2.add(blockSize2.multiply(BigDecimal.valueOf(blocks)));
 		BigDecimal bidPriceTo2 = bidPriceFrom2.subtract(blockSize2.multiply(BigDecimal.valueOf(blocks)));
-
+		
 		asksGrp1 = loadAsksGrp(lstAsks, blockSize1, askPriceFrom1);
 		bidsGrp1 = loadBidsGrp(lstBids, blockSize1, bidPriceFrom1);
 		asksGrp2 = loadAsksGrp(lstAsks, blockSize2, askPriceFrom2);
@@ -106,6 +114,8 @@ public class DepthBlockPoints
 		s1 = getBestBlockBids(bidsGrp1, bidPriceFrom1, bidPriceTo1);
 		r2 = getBestBlockAsks(asksGrp2, askPriceFrom2, askPriceTo2);
 		s2 = getBestBlockBids(bidsGrp2, bidPriceFrom2, bidPriceTo2);
+		
+		return this;
 	}
 
 	private static BigDecimal getBlockSize(BigDecimal price, BigDecimal size)
@@ -155,9 +165,9 @@ public class DepthBlockPoints
 
 	// --------------------------------------------------------------------
 
-	private static ArrayList<OrderBookEntry> loadAsksGrp(List<OrderBookEntry> lstAsks, BigDecimal blockSize, BigDecimal priceFrom)
+	private static List<OrderBookEntry> loadAsksGrp(List<OrderBookEntry> lstAsks, BigDecimal blockSize, BigDecimal priceFrom)
 	{
-		ArrayList<OrderBookEntry> asksGrp = new ArrayList<OrderBookEntry>();
+		List<OrderBookEntry> asksGrp = new ArrayList<OrderBookEntry>();
 
 		if (lstAsks == null || lstAsks.isEmpty())
 		{
@@ -194,9 +204,9 @@ public class DepthBlockPoints
 		return asksGrp;
 	}
 
-	private static ArrayList<OrderBookEntry> loadBidsGrp(List<OrderBookEntry> lstBids, BigDecimal blockSize, BigDecimal priceFrom)
+	private static List<OrderBookEntry> loadBidsGrp(List<OrderBookEntry> lstBids, BigDecimal blockSize, BigDecimal priceFrom)
 	{
-		ArrayList<OrderBookEntry> bidsGrp = new ArrayList<OrderBookEntry>();
+		List<OrderBookEntry> bidsGrp = new ArrayList<OrderBookEntry>();
 
 		if (lstBids == null || lstBids.isEmpty())
 		{

@@ -132,29 +132,6 @@ public class TechCandle
 		return closePrice;
 	}
 
-	public double getDefaultPrice(CandleValue candleValue)
-	{
-		switch (candleValue)
-		{
-		case OPEN:
-			return openPrice;
-		case HIGH:
-			return highPrice;
-		case LOW:
-			return lowPrice;
-		case CLOSE:
-			return closePrice;
-		case HL2:
-			return getHL2();
-		case HLC3:
-			return getHLC3();
-		case OHLC4:
-			return getOHLC4();
-		default:
-			return closePrice;
-		}
-	}
-
 	// ---- TO STRING ---------------------------------------------------------
 
 	@Override

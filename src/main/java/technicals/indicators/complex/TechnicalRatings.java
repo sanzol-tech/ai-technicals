@@ -15,6 +15,7 @@ import technicals.indicators.oscillator.AwesomeOscillator;
 import technicals.indicators.oscillator.BullBearPower;
 import technicals.indicators.oscillator.CommodityChannelIndex;
 import technicals.indicators.oscillator.MACD;
+import technicals.indicators.oscillator.Momentum;
 import technicals.indicators.oscillator.RelativeStrengthIndex;
 import technicals.indicators.oscillator.Stochastic;
 import technicals.indicators.oscillator.StochasticRSI;
@@ -39,9 +40,11 @@ public class TechnicalRatings
 		STRONG_SELL, SELL, NEUTRAL, BUY, STRONG_BUY
 	};
 
+	public static final int OVER_OVERBOUGHT = 1;
 	public static final int UP_TREND = 1;
+	public static final int OVER_SOLD = -1;
 	public static final int DOWN_TREND = -1;
-	public static final int NEUTRAL_TREND = 0;
+	public static final int NEUTRAL = 0;
 	
 	private static final int[] MA_PERIODS = { 10, 20, 30, 50, 100, 200 };
 	// public static final int[] MA_PERIODS = { 13, 21, 34, 55, 89, 144, 233 };
@@ -78,6 +81,8 @@ public class TechnicalRatings
 	private int adxStatus;
 	private double ao;
 	private int aoStatus;
+	private double mom;
+	private int momStatus;
 	private double macd;
 	private int macdStatus;
 	private double stochRsi;
@@ -94,7 +99,7 @@ public class TechnicalRatings
 	private RatingStatus oscRatingStatus; 
 
 	// ---- CONSTRUCTOR ----------------------------------------------------------------
-	
+
 	public TechnicalRatings(int pricePrecision)
 	{
 		this.pricePrecision = pricePrecision;
@@ -220,6 +225,16 @@ public class TechnicalRatings
 	public int getAoStatus()
 	{
 		return aoStatus;
+	}
+
+	public double getMom()
+	{
+		return mom;
+	}
+
+	public int getMomStatus()
+	{
+		return momStatus;
 	}
 
 	public double getMacd()
@@ -359,7 +374,7 @@ public class TechnicalRatings
 		{
 			ichimokuTrend = UP_TREND;
 		} else {
-			ichimokuTrend = NEUTRAL_TREND;
+			ichimokuTrend = NEUTRAL;
 		}
 
 	}
@@ -369,7 +384,7 @@ public class TechnicalRatings
 		BigDecimal close = BigDecimal.valueOf(closePrice).setScale(pricePrecision - 1, RoundingMode.HALF_UP);
 		BigDecimal price = BigDecimal.valueOf(avgPrice).setScale(pricePrecision - 1, RoundingMode.HALF_UP);
 		
-		return (price.doubleValue() < close.doubleValue()) ? UP_TREND : (price.doubleValue() > close.doubleValue()) ? DOWN_TREND : NEUTRAL_TREND;
+		return (price.doubleValue() < close.doubleValue()) ? UP_TREND : (price.doubleValue() > close.doubleValue()) ? DOWN_TREND : NEUTRAL;
 	}
 
 	private void calcMARating()
@@ -417,8 +432,6 @@ public class TechnicalRatings
 		// trend = (rating > 0.1) ? UP_TREND : (rating < -0.1) ? DOWN_TREND : NEUTRAL_TREND;
 		trend = emaTrend[0];
 	}
-
-	// ---------------------------------------------------------------------------------
 
 	// ---- Oscillators ----------------------------------------------------------------
 
@@ -475,6 +488,16 @@ public class TechnicalRatings
 		else
 			aoStatus = 0;
 
+		// Momentum
+		IndicatorEntry[] momEntries = Momentum.calculate(candles);
+		mom = last(momEntries).getValue();
+		if (mom > prev1(momEntries).getValue())
+			momStatus = 1;
+		else if (mom < prev1(momEntries).getValue())
+			momStatus = -1;
+		else
+			momStatus = 0;
+		
 		// MACD
 		MACDEntry[] macdEntries = MACD.calculate(candles, 12, 26, 9);
 		macd = last(macdEntries).getMacd();
@@ -529,8 +552,8 @@ public class TechnicalRatings
 
 	private void calcOscRating()
 	{
-		oscRatingSum = rsiStatus + stochStatus + cciStatus + adxStatus + aoStatus + macdStatus + stochRsiStatus + williamsRStatus + bbpStatus + uoStatus;
-		oscRatingCount = 10;
+		oscRatingSum = rsiStatus + stochStatus + cciStatus + adxStatus + aoStatus + momStatus + macdStatus + stochRsiStatus + williamsRStatus + bbpStatus + uoStatus;
+		oscRatingCount = 11;
 		double rating = oscRatingSum / oscRatingCount;  
 
 		if (rating < -0.5)
@@ -545,8 +568,6 @@ public class TechnicalRatings
 			oscRatingStatus = RatingStatus.NEUTRAL;
 	}
 
-	// ---------------------------------------------------------------------------------
-	
 	// ---------------------------------------------------------------------------------
 
 	private static <T> T last(T[] t)
@@ -566,21 +587,37 @@ public class TechnicalRatings
 
 	// ---------------------------------------------------------------------------------
 
+	public double getAtrClosePercent()
+	{
+		double close = candles[candles.length - 1].getClosePrice();
+		return BigDecimal.valueOf((atr / close) * 100).setScale(2, RoundingMode.HALF_UP).doubleValue();
+	}
+
 	@Override
 	public String toString()
 	{
-		return "closePrice=" + candles[candles.length - 1].getClosePrice()
-				+ "\natr=" + atr + " atr%=" + atr / candles[candles.length - 1].getClosePrice()
-				+ "\nsma=" + Arrays.toString(sma) + "\nsmaTrend=" + Arrays.toString(smaTrend) 
-				+ "\nema=" + Arrays.toString(ema) + "\nemaTrend=" + Arrays.toString(emaTrend)
+		double close = candles[candles.length - 1].getClosePrice();
+
+		return "closePrice=" + close
+				+ "\natr=" + atr + " atr%=" + getAtrClosePercent()
+				+ "\nsma=" + Arrays.toString(sma) + ", smaTrend=" + Arrays.toString(smaTrend) 
+				+ "\nema=" + Arrays.toString(ema) + ", emaTrend=" + Arrays.toString(emaTrend)
 				+ "\nvwma=" + vwma + ", vwmaTrend=" + vwmaTrend 
 				+ "\nhma=" + hma + ", hmaTrend=" + hmaTrend 
 				+ "\nichimokuBaseLine=" + ichimokuBaseLine + ", ichimokuTrend=" + ichimokuTrend 
 				+ "\n\nmaRatingStatus=" + maRatingStatus + ", maRatingSum=" + maRatingSum + ", maRatingCount=" + maRatingCount 
-				+ "\n\ntrend=" + trend + "\nrsi=" + rsi + "\nrsiStatus=" + rsiStatus + "\nstoch=" + stoch + "\nstochStatus=" + stochStatus
-				+ "\ncci=" + cci + "\ncciStatus=" + cciStatus + "\nadx=" + adx + "\nadxStatus=" + adxStatus + "\nao=" + ao + "\naoStatus=" + aoStatus + "\nmacd=" + macd 
-				+ "\nmacdStatus=" + macdStatus + "\nstochRsi=" + stochRsi + "\nstochRsiStatus=" + stochRsiStatus + "\nwilliamsR=" + williamsR + "\nwilliamsRStatus=" + williamsRStatus 
-				+ "\nbbp=" + bbp + "\nbbpStatus=" + bbpStatus + "\nuo=" + uo + "\nuoStatus=" + uoStatus 
+				+ "\n\ntrend=" + trend
+				+ "\n\nrsi=" + rsi + ", rsiStatus=" + rsiStatus 
+				+ "\nstoch=" + stoch + ", stochStatus=" + stochStatus
+				+ "\ncci=" + cci + ", cciStatus=" + cciStatus 
+				+ "\nadx=" + adx + ", adxStatus=" + adxStatus 
+				+ "\nao=" + ao + ", aoStatus=" + aoStatus 
+				+ "\nmom=" + mom + ", momStatus=" + momStatus 
+				+ "\nmacd=" + macd + ", macdStatus=" + macdStatus 
+				+ "\nstochRsi=" + stochRsi + ", stochRsiStatus=" + stochRsiStatus 
+				+ "\nwilliamsR=" + williamsR + ", williamsRStatus=" + williamsRStatus 
+				+ "\nbbp=" + bbp + ", bbpStatus=" + bbpStatus 
+				+ "\nuo=" + uo + ", uoStatus=" + uoStatus
 				+ "\n\noscRatingStatus=" + oscRatingStatus + ", oscRatingSum=" + oscRatingSum + ", oscRatingCount=" + oscRatingCount; 
 	}
 	

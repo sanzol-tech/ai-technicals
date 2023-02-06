@@ -5,7 +5,7 @@ import java.util.List;
 
 import exchanges.binance.BinanceApiClient;
 import exchanges.binance.BinanceCandle;
-import exchanges.binance.BinanceCandleUtils;
+import exchanges.binance.BinanceUtils;
 import exchanges.binance.BinanceIntervalType;
 import technicals.indicators.oscillator.StochasticRSI;
 import technicals.model.TechCandle;
@@ -23,7 +23,7 @@ public class StochasticRSI_
 		// TechCandle[] candles = BybitCandleUtils.toCandleArray(lstBybitCandle);
 
 		List<BinanceCandle> lstBinanceCandles = BinanceApiClient.getKlines("BTCUSDT", BinanceIntervalType._1d, 50);
-		TechCandle[] candles = BinanceCandleUtils.toCandleArray(lstBinanceCandles);
+		TechCandle[] candles = BinanceUtils.toCandleArray(lstBinanceCandles);
 
 		StochRsiEntry[] entries = StochasticRSI.calculate(candles, 14, 14, 3, 3);
 

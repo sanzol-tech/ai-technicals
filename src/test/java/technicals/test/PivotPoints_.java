@@ -4,7 +4,7 @@ import java.util.List;
 
 import exchanges.binance.BinanceApiClient;
 import exchanges.binance.BinanceCandle;
-import exchanges.binance.BinanceCandleUtils;
+import exchanges.binance.BinanceUtils;
 import exchanges.binance.BinanceIntervalType;
 import technicals.indicators.pp.CamarillaPivotPoints;
 import technicals.indicators.pp.DemarksPivotPoints;
@@ -19,7 +19,7 @@ public class PivotPoints_
 	public static void main(String[] args) throws Exception
 	{
 		List<BinanceCandle> lstBinanceCandles = BinanceApiClient.getKlines("BTCUSDT", BinanceIntervalType._1w, 2);
-		TechCandle[] candles = BinanceCandleUtils.toCandleArray(lstBinanceCandles);
+		TechCandle[] candles = BinanceUtils.toCandleArray(lstBinanceCandles);
 		TechCandle candle = candles[candles.length - 2];
 
 		System.out.println("Standard\n" + new StandardPivotPoints().calculate(candle));

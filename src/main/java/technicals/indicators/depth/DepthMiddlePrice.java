@@ -1,7 +1,9 @@
 package technicals.indicators.depth;
 
-import java.util.List;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
+import technicals.model.OrderBook;
 import technicals.model.OrderBookEntry;
 
 /**
@@ -9,25 +11,35 @@ import technicals.model.OrderBookEntry;
  */
 public class DepthMiddlePrice
 {
-	public static double calculate(List<OrderBookEntry> lstAsks, List<OrderBookEntry> lstBids)
+	private OrderBook orderBook;
+
+	public DepthMiddlePrice(OrderBook orderBook)
 	{
-		return calculate(lstAsks, lstBids, 0.1, false);
+		this.orderBook = orderBook;
 	}
 
-	public static double calculate(List<OrderBookEntry> lstAsks, List<OrderBookEntry> lstBids, double depthPercent, boolean quoted)
+	public BigDecimal calculate()
 	{
-		double pp = (lstAsks.get(0).getPrice().doubleValue() + lstBids.get(0).getPrice().doubleValue()) / 2;
-		double askMaxPrice = pp * (1 + depthPercent);
-		double askMinPrice = pp * (1 - depthPercent);
+		return calculate(0.15, false);
+	}
+
+	public BigDecimal calculate(double distance, boolean quoted)
+	{
+		double firstAskPrice = orderBook.getAsks().firstEntry().getValue().getPrice().doubleValue();
+		double firstBidPrice = orderBook.getBids().firstEntry().getValue().getPrice().doubleValue();		
+		double pp = (firstAskPrice + firstBidPrice) / 2;
+		
+		double maxPrice = pp * (1 + distance);
+		double minPrice = pp * (1 - distance);
 
 		double askSumProd = 0.0;
 		double askSumQty = 0.0;
 		double bidSumProd = 0.0;
 		double bidSumQty = 0.0;
 
-		for (OrderBookEntry entry : lstAsks)
+		for (OrderBookEntry entry : orderBook.getAsks().values())
 		{
-			if (entry.getPrice().doubleValue() > askMaxPrice)
+			if (entry.getPrice().doubleValue() > maxPrice)
 			{
 				break;
 			}
@@ -36,9 +48,9 @@ public class DepthMiddlePrice
 			askSumQty += qty;
 		}
 
-		for (OrderBookEntry entry : lstBids)
+		for (OrderBookEntry entry : orderBook.getBids().values())
 		{
-			if (entry.getPrice().doubleValue() < askMinPrice)
+			if (entry.getPrice().doubleValue() < minPrice)
 			{
 				break;
 			}
@@ -47,9 +59,9 @@ public class DepthMiddlePrice
 			bidSumQty += qty;
 		}
 
-		double weightedPoint = (askSumProd + bidSumProd) / (askSumQty + bidSumQty);
+		double dmp = (askSumProd + bidSumProd) / (askSumQty + bidSumQty);
 
-		return weightedPoint;
+		return BigDecimal.valueOf(dmp).setScale(orderBook.getPricePrecision(), RoundingMode.HALF_UP);
 	}
 
 }

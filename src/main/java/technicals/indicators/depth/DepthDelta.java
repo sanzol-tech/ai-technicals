@@ -1,7 +1,6 @@
 package technicals.indicators.depth;
 
-import java.util.List;
-
+import technicals.model.OrderBook;
 import technicals.model.OrderBookEntry;
 
 /**
@@ -9,6 +8,8 @@ import technicals.model.OrderBookEntry;
  */
 public class DepthDelta
 {
+	private OrderBook orderBook;
+
 	private double askSumQty;
 	private double askSumQuoted;
 	private double bidSumQty;
@@ -17,6 +18,11 @@ public class DepthDelta
 	private double deltaPercent;
 	private double deltaQuoted;
 	private double deltaQuotedPercent;
+
+	public DepthDelta(OrderBook orderBook)
+	{
+		this.orderBook = orderBook;
+	}
 
 	public double getAskSumQty()
 	{
@@ -58,31 +64,23 @@ public class DepthDelta
 		return deltaQuotedPercent;
 	}
 
-	public static DepthDelta getInstance()
+	public DepthDelta calculate(Double distance)
 	{
-		return new DepthDelta();
-	}
+		double firstAskPrice = orderBook.getAsks().firstEntry().getValue().getPrice().doubleValue();
+		double firstBidPrice = orderBook.getBids().firstEntry().getValue().getPrice().doubleValue();
+		double pp = (firstAskPrice + firstBidPrice) / 2;
 
-	public void calculate(List<OrderBookEntry> lstAsks, List<OrderBookEntry> lstBids)
-	{
-		calculate(lstAsks, lstBids, 0.1);
-	}
-
-	public void calculate(List<OrderBookEntry> lstAsks, List<OrderBookEntry> lstBids, Double depthPercent)
-	{
-		double pp = (lstAsks.get(0).getPrice().doubleValue() + lstBids.get(0).getPrice().doubleValue()) / 2;
-
-		double askMaxPrice = pp * (depthPercent != null ? (1 + depthPercent) : 5);
-		double askMinPrice = pp * (depthPercent != null ? (1 - depthPercent) : 0.2);
+		double maxPrice = pp * (distance != null ? (1 + distance) : 5);
+		double minPrice = pp * (distance != null ? (1 - distance) : 0.2);
 
 		askSumQty = 0.0;
 		askSumQuoted = 0.0;
 		bidSumQty = 0.0;
 		bidSumQuoted = 0.0;
 
-		for (OrderBookEntry entry : lstAsks)
+		for (OrderBookEntry entry : orderBook.getAsks().values())
 		{
-			if (entry.getPrice().doubleValue() > askMaxPrice)
+			if (entry.getPrice().doubleValue() > maxPrice)
 			{
 				break;
 			}
@@ -90,9 +88,9 @@ public class DepthDelta
 			askSumQuoted += entry.getUsd().doubleValue();
 		}
 
-		for (OrderBookEntry entry : lstBids)
+		for (OrderBookEntry entry : orderBook.getBids().values())
 		{
-			if (entry.getPrice().doubleValue() < askMinPrice)
+			if (entry.getPrice().doubleValue() < minPrice)
 			{
 				break;
 			}
@@ -104,6 +102,8 @@ public class DepthDelta
 		deltaPercent = ((bidSumQty - askSumQty) / (askSumQty + bidSumQty)) * 100;
 		deltaQuoted = askSumQuoted - bidSumQuoted;
 		deltaQuotedPercent = ((bidSumQuoted - askSumQuoted) / (askSumQuoted + bidSumQuoted)) * 100;
+		
+		return this;
 	}
 
 }

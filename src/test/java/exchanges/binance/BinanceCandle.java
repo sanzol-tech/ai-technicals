@@ -10,26 +10,31 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class BinanceCandle
 {
+
 	private long openTime;
-	private BigDecimal open;
-	private BigDecimal high;
-	private BigDecimal low;
-	private BigDecimal close;
+	private BigDecimal openPrice;
+	private BigDecimal highPrice;
+	private BigDecimal lowPrice;
+	private BigDecimal closePrice;
 	private BigDecimal volume;
+	private BigDecimal quoteVolume;
+	private Long count;
 
 	public BinanceCandle()
 	{
 		//
 	}
 
-	public BinanceCandle(long openTime, BigDecimal open, BigDecimal high, BigDecimal low, BigDecimal close, BigDecimal volume)
+	public BinanceCandle(long openTime, BigDecimal openPrice, BigDecimal highPrice, BigDecimal lowPrice, BigDecimal closePrice, BigDecimal volume, BigDecimal quoteVolume, Long count)
 	{
-		this.openTime = openTime;
-		this.open = open;
-		this.high = high;
-		this.low = low;
-		this.close = close;
+		this.openPrice = openPrice;
+		this.openPrice = openPrice;
+		this.highPrice = highPrice;
+		this.lowPrice = lowPrice;
+		this.closePrice = closePrice;
 		this.volume = volume;
+		this.quoteVolume = quoteVolume;
+		this.count = count;
 	}
 
 	public long getOpenTime()
@@ -42,44 +47,44 @@ public class BinanceCandle
 		this.openTime = openTime;
 	}
 
-	public BigDecimal getOpen()
+	public BigDecimal getOpenPrice()
 	{
-		return open;
+		return openPrice;
 	}
 
-	public void setOpen(BigDecimal open)
+	public void setOpenPrice(BigDecimal openPrice)
 	{
-		this.open = open;
+		this.openPrice = openPrice;
 	}
 
-	public BigDecimal getHigh()
+	public BigDecimal getHighPrice()
 	{
-		return high;
+		return highPrice;
 	}
 
-	public void setHigh(BigDecimal high)
+	public void setHighPrice(BigDecimal highPrice)
 	{
-		this.high = high;
+		this.highPrice = highPrice;
 	}
 
-	public BigDecimal getLow()
+	public BigDecimal getLowPrice()
 	{
-		return low;
+		return lowPrice;
 	}
 
-	public void setLow(BigDecimal low)
+	public void setLowPrice(BigDecimal lowPrice)
 	{
-		this.low = low;
+		this.lowPrice = lowPrice;
 	}
 
-	public BigDecimal getClose()
+	public BigDecimal getClosePrice()
 	{
-		return close;
+		return closePrice;
 	}
 
-	public void setClose(BigDecimal close)
+	public void setClosePrice(BigDecimal closePrice)
 	{
-		this.close = close;
+		this.closePrice = closePrice;
 	}
 
 	public BigDecimal getVolume()
@@ -92,6 +97,26 @@ public class BinanceCandle
 		this.volume = volume;
 	}
 
+	public BigDecimal getQuoteVolume()
+	{
+		return quoteVolume;
+	}
+
+	public void setQuoteVolume(BigDecimal quoteVolume)
+	{
+		this.quoteVolume = quoteVolume;
+	}
+
+	public Long getCount()
+	{
+		return count;
+	}
+
+	public void setCount(Long count)
+	{
+		this.count = count;
+	}
+
 	// ---- CALCULATED FIELDS -------------------------------------------------
 
 	public ZonedDateTime getOpenTimeZoned()
@@ -100,11 +125,11 @@ public class BinanceCandle
 	}
 
 	// ---- TO STRING ---------------------------------------------------------
-
+	
 	@Override
 	public String toString()
 	{
-		return "BinanceCandle [openTime=" + getOpenTimeZoned() + ", open=" + open + ", high=" + high + ", low=" + low + ", close=" + close + ", volume=" + volume + "]";
+		return "BinanceCandle [openTime=" + getOpenTimeZoned() + ", openPrice=" + openPrice + ", highPrice=" + highPrice + ", lowPrice=" + lowPrice + ", closePrice=" + closePrice + ", volume=" + volume + ", quoteVolume=" + quoteVolume + ", count=" + count + "]";
 	}
 
 }

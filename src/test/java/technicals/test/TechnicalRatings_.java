@@ -4,7 +4,7 @@ import java.util.List;
 
 import exchanges.binance.BinanceApiClient;
 import exchanges.binance.BinanceCandle;
-import exchanges.binance.BinanceCandleUtils;
+import exchanges.binance.BinanceUtils;
 import exchanges.binance.BinanceIntervalType;
 import technicals.indicators.complex.TechnicalRatings;
 import technicals.model.TechCandle;
@@ -14,10 +14,10 @@ public class TechnicalRatings_
 
 	public static void main(String[] args) throws Exception
 	{
-		List<BinanceCandle> lstBinanceCandles = BinanceApiClient.getKlines("ADAUSDT", BinanceIntervalType._1d, TechnicalRatings.minCandlesLengh());
-		TechCandle[] candles = BinanceCandleUtils.toCandleArray(lstBinanceCandles);
+		List<BinanceCandle> lstBinanceCandles = BinanceApiClient.getKlines("BTCUSDT", BinanceIntervalType._1d, TechnicalRatings.minCandlesLengh());
+		TechCandle[] candles = BinanceUtils.toCandleArray(lstBinanceCandles);
 
-		int pricePrecision = 4;
+		int pricePrecision = 2;
 
 		long t1 = System.currentTimeMillis();
 		TechnicalRatings tech = new TechnicalRatings(pricePrecision);

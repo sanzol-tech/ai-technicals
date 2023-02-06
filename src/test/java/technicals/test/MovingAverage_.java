@@ -5,7 +5,7 @@ import java.util.List;
 
 import exchanges.binance.BinanceApiClient;
 import exchanges.binance.BinanceCandle;
-import exchanges.binance.BinanceCandleUtils;
+import exchanges.binance.BinanceUtils;
 import exchanges.binance.BinanceIntervalType;
 import technicals.indicators.ma.ExponentialMovingAverage;
 import technicals.indicators.ma.HullMovingAverage;
@@ -21,7 +21,7 @@ public class MovingAverage_
 	public static void main(String[] args) throws Exception
 	{
 		List<BinanceCandle> lstBinanceCandles = BinanceApiClient.getKlines("BTCUSDT", BinanceIntervalType._1d, 30);
-		TechCandle[] candles = BinanceCandleUtils.toCandleArray(lstBinanceCandles);
+		TechCandle[] candles = BinanceUtils.toCandleArray(lstBinanceCandles);
 
 		IndicatorEntry[] smaEntries = SimpleMovingAverage.calculate(candles, 9);
 		IndicatorEntry[] wmaEntries = WeightedMovingAverage.calculate(candles, 9);

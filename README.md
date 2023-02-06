@@ -50,12 +50,13 @@ Java library for financial technical analysis with multiple technical indicators
 ### Technical Ratings
 - Technical Ratings
 
-### Order Book Depth Indicators
-- Block Points
-- Weighted Points
-- Super Blocks
-- Delta
-- Middle Price
+### Order Book Depth Indicators <sup>*Experimental*</sup>
+- Depth True Range - Volatility indicator
+- Depth Middle Price - Trend indicator
+- Depth Delta - Balance between ask / bid
+- Depth Block Points - Supports & Resistances
+- Depth Weighted Points - Supports & Resistances
+- Depth Super Prices - Prices with the largest number of orders
 
 ## How to use the library
 
