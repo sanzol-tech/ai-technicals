@@ -16,16 +16,16 @@ public class AverageTrueRange_
 
 	public static void main(String[] args) throws Exception
 	{
-		// List<KucoinCandle> lstKucoinCandle = KucoinApiClient.getKlines("BTC-USDT", KucoinIntervalType._1d, 30);
+		// List<KucoinCandle> lstKucoinCandle = KucoinApiClient.getKlines("BTC-USDT", KucoinIntervalType._1d, 100);
 		// TechCandle[] candles = KucoinCandleUtils.toCandleArray(lstKucoinCandle);
 
-		// List<BybitCandle> lstBybitCandle = BybitApiClient.getKlines("BTCUSDT", BybitIntervalType._1d, 30);
+		// List<BybitCandle> lstBybitCandle = BybitApiClient.getKlines("BTCUSDT", BybitIntervalType._1d, 100);
 		// TechCandle[] candles = BybitCandleUtils.toCandleArray(lstBybitCandle);
 
-		List<BinanceCandle> lstBinanceCandles = BinanceApiClient.getKlines("BTCUSDT", BinanceIntervalType._1d, 30);
+		List<BinanceCandle> lstBinanceCandles = BinanceApiClient.getKlines("BTCUSDT", BinanceIntervalType._1d, 100);
 		TechCandle[] candles = BinanceUtils.toCandleArray(lstBinanceCandles);
 
-		AtrEntry[] entries = AverageTrueRange.calculate(candles, 20);
+		AtrEntry[] entries = AverageTrueRange.calculate(candles, 14);
 
 		Arrays.stream(entries).forEach(s -> System.out.println(s == null ? "null" : s));
 	}

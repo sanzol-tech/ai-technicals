@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Arrays;
 
-import technicals.config.Labels;
 import technicals.indicators.ma.ExponentialMovingAverage;
 import technicals.indicators.ma.HullMovingAverage;
 import technicals.indicators.ma.SimpleMovingAverage;
@@ -21,9 +20,7 @@ import technicals.indicators.oscillator.Stochastic;
 import technicals.indicators.oscillator.StochasticRSI;
 import technicals.indicators.oscillator.UltimateOscillator;
 import technicals.indicators.oscillator.WilliamsR;
-import technicals.indicators.volatility.AverageTrueRange;
 import technicals.model.TechCandle;
-import technicals.model.indicators.AtrEntry;
 import technicals.model.indicators.IchimokuEntry;
 import technicals.model.indicators.IndicatorEntry;
 import technicals.model.oscillator.AdxEntry;
@@ -37,37 +34,42 @@ public class TechnicalRatings
 {
 	public enum RatingStatus
 	{
-		STRONG_SELL, SELL, NEUTRAL, BUY, STRONG_BUY
+		STRONG_SELL(-2), SELL(-1), NEUTRAL(0), BUY(1), STRONG_BUY(2);
+
+		private int value;
+
+		RatingStatus(int value)
+		{
+			this.value = value;
+		}
+
+		public int getValue()
+		{
+			return value;
+		}
 	};
 
-	public static final int OVER_OVERBOUGHT = 1;
 	public static final int UP_TREND = 1;
-	public static final int OVER_SOLD = -1;
 	public static final int DOWN_TREND = -1;
 	public static final int NEUTRAL = 0;
-	
-	private static final int[] MA_PERIODS = { 10, 20, 30, 50, 100, 200 };
-	// public static final int[] MA_PERIODS = { 13, 21, 34, 55, 89, 144, 233 };
 
 	private int pricePrecision;
 
 	private TechCandle[] candles;
 
-	private double atr;
-
-	private double[] sma = new double[MA_PERIODS.length];
-	private int[] smaTrend = new int[MA_PERIODS.length];
-	private double[] ema = new double[MA_PERIODS.length];
-	private int[] emaTrend = new int[MA_PERIODS.length];
-	private double vwma;
-	private int vwmaTrend;
-	private double hma;
-	private int hmaTrend;
+	private double[] sma;
+	private int[] smaTrend;
+	private double[] ema;
+	private int[] emaTrend;
+	private double[] vwma;
+	private int[] vwmaTrend;
+	private double[] hma;
+	private int[] hmaTrend;
 	private double ichimokuBaseLine;
 	private int ichimokuTrend;
 
-	private double maRatingSum;
-	private double maRatingCount;
+	private double maRatingSum = 0;
+	private double maRatingCount = 0;
 	private RatingStatus maRatingStatus; 
 	private int trend;
 
@@ -94,8 +96,8 @@ public class TechnicalRatings
 	private double uo;
 	private int uoStatus;
 
-	private double oscRatingSum;
-	private double oscRatingCount;
+	private double oscRatingSum = 0;
+	private double oscRatingCount = 0;
 	private RatingStatus oscRatingStatus; 
 
 	// ---- CONSTRUCTOR ----------------------------------------------------------------
@@ -112,9 +114,9 @@ public class TechnicalRatings
 		return candles;
 	}
 
-	public double getAtr()
+	public void setCandles(TechCandle[] candles)
 	{
-		return atr;
+		this.candles = candles;
 	}
 
 	public double[] getSma()
@@ -137,22 +139,22 @@ public class TechnicalRatings
 		return emaTrend;
 	}
 
-	public double getVwma()
+	public double[] getVwma()
 	{
 		return vwma;
 	}
 
-	public int getVwmaTrend()
+	public int[] getVwmaTrend()
 	{
 		return vwmaTrend;
 	}
 
-	public double getHma()
+	public double[] getHma()
 	{
 		return hma;
 	}
 
-	public int getHmaTrend()
+	public int[] getHmaTrend()
 	{
 		return hmaTrend;
 	}
@@ -294,66 +296,124 @@ public class TechnicalRatings
 
 	// ---- Calc -----------------------------------------------------------------------
 
-	public static int minCandlesLengh()
-	{
-		return MA_PERIODS[MA_PERIODS.length-1] + 2;
-	}
-	
 	public void calculate(TechCandle[] candles) throws Exception
 	{
-		if (candles.length < minCandlesLengh())
-		{
-			throw new IllegalArgumentException(Labels.NOT_ENOUGH_VALUES);
-		}
-
 		this.candles = candles;
 
-		// ---- Volatility -------------------------------------------
-		AtrEntry[] atrEntries = AverageTrueRange.calculate(candles, 28);
-		atr = atrEntries[atrEntries.length - 1].getAtr();
-
 		// ---- Trend ------------------------------------------------
-		calcMovingAverages();
-		calcMARating();
+		startCalcMA();
+		// withSMA(13, 21, 34, 55, 89, 144, 233);
+		withSMA(10, 20, 30, 50, 100, 200);
+		// withEMA(13, 21, 34, 55, 89, 144, 233);
+		withEMA(10, 20, 30, 50, 100, 200);
+		withVWMA(20);
+		withHMA(20);
+		withIchimoku();
+		calcRatingMA();
 
 		// ---- Oscillators ------------------------------------------
-		calcOscillators();
-		calcOscRating();
-		
+		startCalcOsc();
+		withRSI(14);
+		withStochastic(14, 3, 3);
+		withCCI(20);
+		withADX(14);
+		withAO();
+		withMomentum(10);
+		withMACD(12, 26, 9);
+		withStochasticRSI(14, 14, 3, 3);
+		withWilliamsR(14);
+		withBullBearPower();
+		withUO(7, 14, 28);
+		calcRatingOsc();
+
 	}
 
 	// ---- Moving Averages ------------------------------------------------------------
 
-	public void calcMovingAverages()
+	public TechnicalRatings withSMA(int... periods)
+	{
+		sma = new double[periods.length];
+		smaTrend = new int[periods.length];
+
+		double closePrice = last(candles).getClosePrice();
+
+		// SMA
+		for (int i = 0; i < periods.length; i++)
+		{
+			IndicatorEntry[] smaEntries = SimpleMovingAverage.calculate(candles, periods[i]);
+			sma[i] = last(smaEntries).getValue();
+			smaTrend[i] = calcMAvgTrend(sma[i], closePrice);
+
+			addRatingMA(smaTrend[i]);
+		}
+
+		return this;
+	}
+
+	public TechnicalRatings withEMA(int... periods)
+	{
+		ema = new double[periods.length];
+		emaTrend = new int[periods.length];
+		
+		double closePrice = last(candles).getClosePrice();
+
+		// EMA
+		for (int i = 0; i < periods.length; i++)
+		{
+			IndicatorEntry[] emaEntries = ExponentialMovingAverage.calculate(candles, periods[i]);
+			ema[i] = last(emaEntries).getValue();
+			emaTrend[i] = calcMAvgTrend(ema[i], closePrice);
+			
+			addRatingMA(emaTrend[i]);
+		}
+
+		return this;
+	}
+
+	public TechnicalRatings withVWMA(int... periods)
+	{
+		vwma = new double[periods.length];
+		vwmaTrend = new int[periods.length];
+
+		double closePrice = last(candles).getClosePrice();
+
+		// VWMA
+		for (int i = 0; i < periods.length; i++)
+		{
+			IndicatorEntry[] vwmaEntries = VWMovingAverage.calculate(candles, periods[i]);
+			vwma[i] = last(vwmaEntries).getValue();
+			vwmaTrend[i] = calcMAvgTrend(vwma[i], closePrice);
+
+			addRatingMA(vwmaTrend[i]);
+		}
+
+		return this;
+	}
+
+	public TechnicalRatings withHMA(int... periods)
+	{
+		hma = new double[periods.length];
+		hmaTrend = new int[periods.length];
+
+		double closePrice = last(candles).getClosePrice();
+
+		// HMA
+		for (int i = 0; i < periods.length; i++)
+		{
+			IndicatorEntry[] vwmaEntries = HullMovingAverage.calculate(candles, periods[i]);
+			hma[i] = last(vwmaEntries).getValue();
+			hmaTrend[i] = calcMAvgTrend(hma[i], closePrice);
+
+			addRatingMA(hmaTrend[i]);
+		}
+
+		return this;
+	}
+
+	public TechnicalRatings withIchimoku()
 	{
 		double closePrice = last(candles).getClosePrice();
 		double closePricePrev = prev1(candles).getClosePrice();
-
-		// SMA
-		for (int i = 0; i < MA_PERIODS.length; i++)
-		{
-			IndicatorEntry[] smaEntries = SimpleMovingAverage.calculate(candles, MA_PERIODS[i]);
-			sma[i] = last(smaEntries).getValue();
-			smaTrend[i] = calcMAvgTrend(sma[i], closePrice);
-		}
-
-		// EMA
-		for (int i = 0; i < MA_PERIODS.length; i++)
-		{
-			IndicatorEntry[] emaEntries = ExponentialMovingAverage.calculate(candles, MA_PERIODS[i]);
-			ema[i] = last(emaEntries).getValue();
-			emaTrend[i] = calcMAvgTrend(ema[i], closePrice);
-		}
-
-		// VWMA
-		IndicatorEntry[] vwmaEntries = VWMovingAverage.calculate(candles, MA_PERIODS[1]);
-		vwma = last(vwmaEntries).getValue();
-		vwmaTrend = calcMAvgTrend(vwma, closePrice);
-
-		// HMA
-		IndicatorEntry[] hmaEntries = HullMovingAverage.calculate(candles, MA_PERIODS[0]);
-		hma = last(hmaEntries).getValue();
-		hmaTrend = calcMAvgTrend(hma, closePrice);
 
 		// ICHIMOKU
 		IchimokuEntry[] ichimokuEntries = Ichimoku.calculate(candles);
@@ -377,6 +437,8 @@ public class TechnicalRatings
 			ichimokuTrend = NEUTRAL;
 		}
 
+		addRatingMA(ichimokuTrend);
+		return this;	
 	}
 
 	private int calcMAvgTrend(double avgPrice, double closePrice)
@@ -387,32 +449,22 @@ public class TechnicalRatings
 		return (price.doubleValue() < close.doubleValue()) ? UP_TREND : (price.doubleValue() > close.doubleValue()) ? DOWN_TREND : NEUTRAL;
 	}
 
-	private void calcMARating()
+	public TechnicalRatings startCalcMA()
 	{
 		maRatingSum = 0;
 		maRatingCount = 0;
-
-		for (int i = 0; i < MA_PERIODS.length; i++)
-		{
-			maRatingSum += smaTrend[i];
-			maRatingCount++;
-		}
-
-		for (int i = 0; i < MA_PERIODS.length; i++)
-		{
-			maRatingSum += emaTrend[i];
-			maRatingCount++;
-		}
-
-		maRatingSum += vwmaTrend;
-		maRatingCount++;
-
-		maRatingSum += hmaTrend;
-		maRatingCount++;
-
-		maRatingSum += ichimokuTrend;
-		maRatingCount++;
 		
+		return this;
+	}
+
+	private void addRatingMA(int value)
+	{
+		maRatingSum += value;
+		maRatingCount++;
+	}
+
+	public void calcRatingMA()
+	{
 		double rating = maRatingSum / maRatingCount;  
 
 		// -------------------------------------------
@@ -435,11 +487,10 @@ public class TechnicalRatings
 
 	// ---- Oscillators ----------------------------------------------------------------
 
-	public void calcOscillators()
+	public TechnicalRatings withRSI(int periods)
 	{
-	
 		// RSI
-		RsiEntry[] rsiEntries = RelativeStrengthIndex.calculate(candles, 14);
+		RsiEntry[] rsiEntries = RelativeStrengthIndex.calculate(candles, periods);
 		rsi = last(rsiEntries).getRsi();
 		if (rsi < 30 && prev1(rsiEntries).getRsi() < rsi)
 			rsiStatus = 1;
@@ -447,9 +498,15 @@ public class TechnicalRatings
 			rsiStatus = -1;
 		else
 			rsiStatus = 0;
+		
+		addRatingOsc(rsiStatus);
+		return this;
+	}
 
+	public TechnicalRatings withStochastic(int periods, int smoothK, int smoothD)
+	{
 		// Stochastic
-		StochasticEntry[] stochEntries = Stochastic.calculate(candles, 14, 1, 3);
+		StochasticEntry[] stochEntries = Stochastic.calculate(candles, periods, smoothK, smoothD);
 		stoch = last(stochEntries).getD();
 		if (last(stochEntries).getK() < 20 && last(stochEntries).getD() < 20 && last(stochEntries).getK() > last(stochEntries).getD() && prev1(stochEntries).getK() < prev1(stochEntries).getD())
 			stochStatus = 1;
@@ -458,8 +515,14 @@ public class TechnicalRatings
 		else
 			stochStatus = 0;
 
+		addRatingOsc(stochStatus);
+		return this;
+	}
+
+	public TechnicalRatings withCCI(int periods)
+	{
 		// CCI
-		IndicatorEntry[] cciEntries = CommodityChannelIndex.calculate(candles, 20);
+		IndicatorEntry[] cciEntries = CommodityChannelIndex.calculate(candles, periods);
 		cci = last(cciEntries).getValue();
 		if (cci < -100 && cci > prev1(cciEntries).getValue())
 			cciStatus = 1;
@@ -468,8 +531,14 @@ public class TechnicalRatings
 		else
 			cciStatus = 0;
 
+		addRatingOsc(cciStatus);
+		return this;
+	}
+
+	public TechnicalRatings withADX(int periods)
+	{
 		// ADX
-		AdxEntry[] adxEntries = AverageDirectionalIndex.calculate(candles, 14);
+		AdxEntry[] adxEntries = AverageDirectionalIndex.calculate(candles, periods);
 		adx = last(adxEntries).getAdx();
 		if (adx > 20 && last(adxEntries).getPosDI() > last(adxEntries).getNegDI() && prev1(adxEntries).getPosDI() < prev1(adxEntries).getNegDI())
 			adxStatus = 1;
@@ -478,6 +547,12 @@ public class TechnicalRatings
 		else
 			adxStatus = 0;
 
+		addRatingOsc(adxStatus);
+		return this;
+	}
+
+	public TechnicalRatings withAO()
+	{
 		// Awesome Oscillator
 		IndicatorEntry[] aoEntries = AwesomeOscillator.calculate(candles);
 		ao = last(aoEntries).getValue();
@@ -488,18 +563,31 @@ public class TechnicalRatings
 		else
 			aoStatus = 0;
 
+		addRatingOsc(aoStatus);
+		return this;
+	}
+
+	public TechnicalRatings withMomentum(int periods)
+	{
 		// Momentum
-		IndicatorEntry[] momEntries = Momentum.calculate(candles);
+		IndicatorEntry[] momEntries = Momentum.calculate(candles, periods);
 		mom = last(momEntries).getValue();
-		if (mom > prev1(momEntries).getValue())
+		double momPrev = prev1(momEntries).getValue();
+		if (mom > 0 && momPrev > 0 && mom > momPrev )
 			momStatus = 1;
-		else if (mom < prev1(momEntries).getValue())
+		else if (mom < 0 && momPrev < 0 && mom < momPrev )
 			momStatus = -1;
 		else
 			momStatus = 0;
-		
+
+		addRatingOsc(momStatus);
+		return this;
+	}
+
+	public TechnicalRatings withMACD(int fastPeriods, int slowPeriods, int signalPeriods)
+	{
 		// MACD
-		MACDEntry[] macdEntries = MACD.calculate(candles, 12, 26, 9);
+		MACDEntry[] macdEntries = MACD.calculate(candles, fastPeriods, slowPeriods, signalPeriods);
 		macd = last(macdEntries).getMacd();
 		if (macd > last(macdEntries).getSignal())
 			macdStatus = 1;
@@ -508,8 +596,14 @@ public class TechnicalRatings
 		else
 			macdStatus = 0;
 
+		addRatingOsc(macdStatus);
+		return this;
+	}
+
+	public TechnicalRatings withStochasticRSI(int periodsRsi, int periodsStoch, int smoothK, int smoothD)
+	{
 		// Stochastic RSI
-		StochRsiEntry[] stochRsiEntries = StochasticRSI.calculate(candles, 14, 14, 3, 3);
+		StochRsiEntry[] stochRsiEntries = StochasticRSI.calculate(candles, periodsRsi, periodsStoch, smoothK, smoothD);
 		stochRsi = last(stochRsiEntries).getD();
 		if (trend == DOWN_TREND && last(stochRsiEntries).getK() < 20 && last(stochRsiEntries).getD() < 20 && last(stochRsiEntries).getK() > last(stochRsiEntries).getD() && prev1(stochRsiEntries).getK() < prev1(stochRsiEntries).getD())
 			stochRsiStatus = 1;
@@ -518,8 +612,14 @@ public class TechnicalRatings
 		else
 			stochRsiStatus = 0;
 
+		addRatingOsc(stochRsiStatus);
+		return this;
+	}
+
+	public TechnicalRatings withWilliamsR(int periods)
+	{
 		// Williams R
-		WilliamsREntry[] williamsREntries = WilliamsR.calculate(candles, 14);
+		WilliamsREntry[] williamsREntries = WilliamsR.calculate(candles);
 		williamsR = last(williamsREntries).getR();
 		if (williamsR < -80 && williamsR > prev1(williamsREntries).getR())
 			williamsRStatus = 1;
@@ -528,6 +628,12 @@ public class TechnicalRatings
 		else
 			williamsRStatus = 0;
 
+		addRatingOsc(williamsRStatus);
+		return this;
+	}
+
+	public TechnicalRatings withBullBearPower()
+	{
 		// Bull Bear Power
 		IndicatorEntry[] bbpEntries = BullBearPower.calculate(candles, 13);
 		bbp = last(bbpEntries).getValue();
@@ -538,8 +644,14 @@ public class TechnicalRatings
 		else
 			bbpStatus = 0;
 
+		addRatingOsc(bbpStatus);
+		return this;
+	}
+	
+	public TechnicalRatings withUO(int periods1, int periods2, int periods3)
+	{
 		// UO
-		IndicatorEntry[] uoEntries = UltimateOscillator.calculate(candles, 7, 14, 28);
+		IndicatorEntry[] uoEntries = UltimateOscillator.calculate(candles, periods1, periods2, periods3);
 		uo = last(uoEntries).getValue();
 		if (uo > 70)
 			uoStatus = 1;
@@ -548,12 +660,26 @@ public class TechnicalRatings
 		else
 			uoStatus = 0;
 
+		addRatingOsc(uoStatus);
+		return this;
 	}
 
-	private void calcOscRating()
+	public TechnicalRatings startCalcOsc()
 	{
-		oscRatingSum = rsiStatus + stochStatus + cciStatus + adxStatus + aoStatus + momStatus + macdStatus + stochRsiStatus + williamsRStatus + bbpStatus + uoStatus;
-		oscRatingCount = 11;
+		oscRatingSum = 0;
+		oscRatingCount = 0;
+
+		return this;
+	}
+	
+	private void addRatingOsc(int value)
+	{
+		oscRatingSum += value;
+		oscRatingCount++;
+	}
+
+	public void calcRatingOsc()
+	{
 		double rating = oscRatingSum / oscRatingCount;  
 
 		if (rating < -0.5)
@@ -569,7 +695,7 @@ public class TechnicalRatings
 	}
 
 	// ---------------------------------------------------------------------------------
-
+	
 	private static <T> T last(T[] t)
 	{
 		return t[t.length - 1];
@@ -587,19 +713,12 @@ public class TechnicalRatings
 
 	// ---------------------------------------------------------------------------------
 
-	public double getAtrClosePercent()
-	{
-		double close = candles[candles.length - 1].getClosePrice();
-		return BigDecimal.valueOf((atr / close) * 100).setScale(2, RoundingMode.HALF_UP).doubleValue();
-	}
-
 	@Override
 	public String toString()
 	{
 		double close = candles[candles.length - 1].getClosePrice();
 
 		return "closePrice=" + close
-				+ "\natr=" + atr + " atr%=" + getAtrClosePercent()
 				+ "\nsma=" + Arrays.toString(sma) + ", smaTrend=" + Arrays.toString(smaTrend) 
 				+ "\nema=" + Arrays.toString(ema) + ", emaTrend=" + Arrays.toString(emaTrend)
 				+ "\nvwma=" + vwma + ", vwmaTrend=" + vwmaTrend 

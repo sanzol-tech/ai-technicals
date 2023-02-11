@@ -14,10 +14,10 @@ public class TechnicalRatings_
 
 	public static void main(String[] args) throws Exception
 	{
-		List<BinanceCandle> lstBinanceCandles = BinanceApiClient.getKlines("BTCUSDT", BinanceIntervalType._1d, TechnicalRatings.minCandlesLengh());
+		List<BinanceCandle> lstBinanceCandles = BinanceApiClient.getKlines("FLMUSDT", BinanceIntervalType._5m, 240);
 		TechCandle[] candles = BinanceUtils.toCandleArray(lstBinanceCandles);
 
-		int pricePrecision = 2;
+		int pricePrecision = 5;
 
 		long t1 = System.currentTimeMillis();
 		TechnicalRatings tech = new TechnicalRatings(pricePrecision);

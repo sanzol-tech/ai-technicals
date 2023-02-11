@@ -6,6 +6,7 @@ public class AtrEntry extends TechCandle
 {
 	private double tr;
 	private double atr;
+	private double atrp;
 
 	public AtrEntry()
 	{
@@ -42,10 +43,20 @@ public class AtrEntry extends TechCandle
 		this.atr = atr;
 	}
 
+	public double getAtrp()
+	{
+		return atrp;
+	}
+
+	public void setAtrp(double atrp)
+	{
+		this.atrp = atrp;
+	}
+
 	@Override
 	public String toString()
 	{
-		return String.format("%s\t%f\t\t%f\t%f", openTime, closePrice, tr, atr);
+		return String.format("%s\t%f\t\t%f\t%f\t%f", openTime, closePrice, tr, atr, atrp);
 	}
 
 }

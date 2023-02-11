@@ -3,6 +3,7 @@ package technicals.indicators.volatility;
 import technicals.config.Labels;
 import technicals.model.TechCandle;
 import technicals.model.indicators.AtrEntry;
+import technicals.util.Precision;
 
 /**
  * ATR - Average True Range
@@ -12,10 +13,15 @@ public class AverageTrueRange
 
 	public static AtrEntry[] calculate(TechCandle[] candles)
 	{
-		return calculate(candles, 20);
+		return calculate(candles, 20, null);
 	}
 
 	public static AtrEntry[] calculate(TechCandle[] candles, int periods)
+	{
+		return calculate(candles, periods, null);
+	}
+
+	public static AtrEntry[] calculate(TechCandle[] candles, int periods, Integer precision)
 	{
 		if (candles.length < periods)
 		{
@@ -35,17 +41,24 @@ public class AverageTrueRange
 			if (i == 0)
 			{
 				entries[0].setAtr(tr);
+				entries[0].setAtrp((tr / current.getClosePrice()) * 100);
 			}
 			else
 			{
 				double priorATR = entries[i - 1].getAtr();
+
 				double atr = ((priorATR * (periods - 1)) + tr) / periods;
-				entries[i].setAtr(atr);
+				entries[i].setAtr(Precision.round(atr, precision));
+
+				double atrp = atr / current.getClosePrice() * 100;
+				entries[i].setAtrp(Precision.round(atrp, 2));
 			}
 		}
 
 		return entries;
 	}
+	
+	
 
 	public static double trueRange(TechCandle[] candles, int index)
 	{
